@@ -42,6 +42,9 @@ Key response sections:
 - `profile`: resolved place, region, country, coordinates, timezone.
 - `current`: current model-scored weather snapshot.
 - `forecast`: six-day forecast.
+- `hourly`: next 24 hours of temperature, rain probability, wind, humidity, pressure, and weather code.
+- `alerts`: rule-based weather alerts.
+- `explanation`: plain-language model explanation signals.
 - `models`: model leaderboard.
 - `features`: feature importance.
 - `pipeline`: backend flow status.

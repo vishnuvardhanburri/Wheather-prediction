@@ -12,6 +12,9 @@ def main():
 
     assert result["profile"]["city"]
     assert result["forecast"]
+    assert result["hourly"]
+    assert result["alerts"]
+    assert result["explanation"]
     assert result["models"]
     assert result["features"]
     assert result["meta"]["engine"] == "WeatherEnsemble-v2"

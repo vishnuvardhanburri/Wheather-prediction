@@ -17,6 +17,7 @@ const params = new URLSearchParams(window.location.search);
 const initialCity = params.get("city") || "Hyderabad";
 const input = document.getElementById("cityInput");
 const resultsPanel = document.getElementById("searchResults");
+let lastPrediction = null;
 
 if (input) input.value = initialCity;
 
@@ -82,6 +83,7 @@ function refreshPageLinks(city) {
 }
 
 function renderPrediction(data) {
+  lastPrediction = data;
   const profile = data.profile;
   const current = data.current;
   const forecast = data.forecast;
@@ -104,6 +106,11 @@ function renderPrediction(data) {
   renderPipeline(data.pipeline || []);
   renderMeta(data.meta || {});
   renderTrace(current.modelTrace || {});
+  renderHourly(data.hourly || []);
+  renderAlerts(data.alerts || []);
+  renderExplanation(data.explanation || []);
+  renderMap(profile, current);
+  renderFavorites();
   refreshPageLinks(profile.city);
 }
 
@@ -188,6 +195,70 @@ function renderTrace(trace) {
     .join("");
 }
 
+function renderHourly(hourly) {
+  const node = document.getElementById("hourlyGrid");
+  if (!node) return;
+  node.innerHTML = hourly
+    .map(
+      (hour) => `
+        <article class="hour-card">
+          <strong>${hour.hour}</strong>
+          <span>${hour.condition}</span>
+          <div>${hour.temperature}°C</div>
+          <p>${hour.rain}% rain · ${hour.wind} km/h · ${hour.humidity}% RH</p>
+        </article>
+      `,
+    )
+    .join("");
+}
+
+function renderAlerts(alerts) {
+  const node = document.getElementById("alertsGrid");
+  if (!node) return;
+  node.innerHTML = alerts
+    .map(
+      (alert) => `
+        <article class="alert-card alert-${alert.level.toLowerCase()}">
+          <span>${alert.level}</span>
+          <h3>${alert.title}</h3>
+          <p>${alert.detail}</p>
+        </article>
+      `,
+    )
+    .join("");
+}
+
+function renderExplanation(items) {
+  const node = document.getElementById("explanationGrid");
+  if (!node) return;
+  node.innerHTML = items
+    .map(
+      (item) => `
+        <article class="explain-card">
+          <span>${item.signal}</span>
+          <strong>${item.value}</strong>
+          <p>${item.impact}</p>
+        </article>
+      `,
+    )
+    .join("");
+}
+
+function renderMap(profile, current) {
+  const link = document.getElementById("osmLink");
+  if (link) {
+    link.href = `https://www.openstreetmap.org/?mlat=${profile.latitude}&mlon=${profile.longitude}#map=10/${profile.latitude}/${profile.longitude}`;
+  }
+  const marker = document.querySelector(".map-marker");
+  if (marker) {
+    const lon = Number(profile.longitude);
+    const lat = Number(profile.latitude);
+    marker.style.left = `${Math.max(8, Math.min(92, ((lon + 180) / 360) * 100))}%`;
+    marker.style.top = `${Math.max(8, Math.min(92, ((90 - lat) / 180) * 100))}%`;
+    marker.querySelector("span").textContent = `${current.temperature}°`;
+  }
+}
+
 function renderPipeline(pipeline) {
   const node = document.getElementById("pipelineStatus");
   if (!node) return;
@@ -212,10 +283,55 @@ function renderMeta(meta) {
   setText("sla", meta.health || "Live");
 }
 
+function favoriteKey() {
+  return "weatherml:favorites";
+}
+
+function getFavorites() {
+  try {
+    return JSON.parse(localStorage.getItem(favoriteKey()) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveFavorite() {
+  if (!lastPrediction) return;
+  const city = lastPrediction.profile.city;
+  const next = [city, ...getFavorites().filter((item) => item !== city)].slice(0, 8);
+  localStorage.setItem(favoriteKey(), JSON.stringify(next));
+  renderFavorites();
+}
+
+function renderFavorites() {
+  const node = document.getElementById("favoritesList");
+  if (!node) return;
+  const favorites = getFavorites();
+  node.innerHTML = favorites.length
+    ? favorites.map((city) => `<a class="favorite-chip" href="${cityUrl("forecast.html", city)}">${city}</a>`).join("")
+    : `<span class="favorite-empty">No saved favorites yet.</span>`;
+}
+
+function downloadJson() {
+  if (!lastPrediction) return;
+  const blob = new Blob([JSON.stringify(lastPrediction, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${lastPrediction.profile.city.toLowerCase().replaceAll(" ", "-")}-weather-report.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 function targetPageForSubmit() {
   const path = window.location.pathname;
   if (path.endsWith("/models.html")) return "models.html";
   if (path.endsWith("/pipeline.html")) return "pipeline.html";
+  if (path.endsWith("/hourly.html")) return "hourly.html";
+  if (path.endsWith("/alerts.html")) return "alerts.html";
+  if (path.endsWith("/map.html")) return "map.html";
+  if (path.endsWith("/explanation.html")) return "explanation.html";
+  if (path.endsWith("/report.html")) return "report.html";
   return "forecast.html";
 }
 
@@ -249,6 +365,10 @@ document.getElementById("searchForm")?.addEventListener("submit", (event) => {
   event.preventDefault();
   submit(input?.value || initialCity);
 });
+
+document.getElementById("saveFavorite")?.addEventListener("click", saveFavorite);
+document.getElementById("downloadJson")?.addEventListener("click", downloadJson);
+document.getElementById("printReport")?.addEventListener("click", () => window.print());
 
 let searchTimer;
 input?.addEventListener("input", () => {

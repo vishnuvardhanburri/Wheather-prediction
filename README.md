@@ -34,6 +34,12 @@ Most beginner weather prediction projects stop at a notebook or a basic form. Th
 - Live global search through `/api/search`
 - Six-day forecast through `/api/predict`
 - Multi-page frontend: Home, Forecast, Models, Pipeline
+- Hourly forecast page for the next 24 hours
+- Weather risk alerts for storms, heavy rain, wind, and heat
+- Location map page with OpenStreetMap handoff
+- Explanation page showing why confidence/risk changes
+- Printable report page and JSON export
+- Favorites and recent city shortcuts in browser storage
 - Current weather card with temperature, rain chance, humidity, wind, confidence, latency, and health
 - Forecast chart and day cards
 - Model leaderboard for Decision Tree, KNN, Logistic Regression, and Gradient Boosting
@@ -49,9 +55,21 @@ Most beginner weather prediction projects stop at a notebook or a basic form. Th
 | --- | --- |
 | ![Forecast page](docs/images/forecast.png) | ![Models page](docs/images/models.png) |
 
-| Pipeline | Architecture |
+| Hourly | Alerts |
 | --- | --- |
-| ![Pipeline page](docs/images/pipeline.png) | ![Architecture](docs/images/architecture.svg) |
+| ![Hourly page](docs/images/hourly.png) | ![Alerts page](docs/images/alerts.png) |
+
+| Map | Explanation |
+| --- | --- |
+| ![Map page](docs/images/map.png) | ![Explanation page](docs/images/explanation.png) |
+
+| Report | Pipeline |
+| --- | --- |
+| ![Report page](docs/images/report.png) | ![Pipeline page](docs/images/pipeline.png) |
+
+| Architecture |
+| --- | --- |
+| ![Architecture](docs/images/architecture.svg) |
 
 ## Architecture
 
@@ -76,12 +94,19 @@ weather-prediction-ml/
   server.py                        # Python HTTP server and API routes
   index.html                       # Home/search page
   forecast.html                    # Forecast dashboard
+  hourly.html                      # 24-hour forecast view
+  alerts.html                      # Weather risk alerts
+  map.html                         # Location map and coordinates
+  explanation.html                 # Model explanation page
+  report.html                      # Printable/downloadable report
   models.html                      # Models and explainability page
   pipeline.html                    # Pipeline status page
   script.js                        # Frontend API calls and rendering
   styles.css                       # UI styling
   docs/                            # Architecture, API docs, screenshots
   tests/smoke_test.py              # Basic backend smoke test
+  Dockerfile                       # Container deployment
+  .github/workflows/smoke-test.yml # GitHub Actions smoke test
 ```
 
 ## How To Run
@@ -172,6 +197,13 @@ API reference: [docs/api.md](docs/api.md)
 
 ```bash
 python3 tests/smoke_test.py
+```
+
+## Docker
+
+```bash
+docker build -t weatherml .
+docker run --rm -p 4173:4173 weatherml
 ```
 
 ## Data Source

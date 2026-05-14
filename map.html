@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Map | Weather Prediction Using Machine Learning</title>
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app subpage">
+      <nav class="topbar page-topbar" aria-label="Application navigation">
+        <a class="brand" href="/"><span class="brand-mark">W</span><span><strong>WeatherML</strong><small>Python AIML System</small></span></a>
+        <div class="nav-actions">
+          <a data-city-link="forecast.html" href="/forecast.html">Forecast</a>
+          <a data-city-link="hourly.html" href="/hourly.html">Hourly</a>
+          <a data-city-link="alerts.html" href="/alerts.html">Alerts</a>
+          <a class="active" data-city-link="map.html" href="/map.html">Map</a>
+          <a data-city-link="models.html" href="/models.html">Models</a>
+          <a data-city-link="pipeline.html" href="/pipeline.html">Pipeline</a>
+        </div>
+      </nav>
+      <section class="page-shell">
+        <div class="page-head">
+          <div><p class="eyebrow">Map workspace</p><h1>Location and forecast marker</h1><p class="lede">Resolved coordinates, condition, confidence, and a direct OpenStreetMap link.</p></div>
+          <form class="search-panel compact-search" id="searchForm">
+            <label for="cityInput">City name</label>
+            <div class="search-row"><input id="cityInput" name="city" autocomplete="off" placeholder="Search any place" /><button type="submit">Locate</button></div>
+            <div class="search-results" id="searchResults" hidden></div>
+          </form>
+        </div>
+        <section class="map-layout">
+          <article class="panel map-panel">
+            <div class="map-canvas"><div class="map-grid-lines"></div><div class="map-marker"><span id="temp">--</span></div></div>
+          </article>
+          <article class="current-card">
+            <p id="region" class="muted">Loading location</p>
+            <h2 id="cityName">Map</h2>
+            <p id="condition" class="condition">Waiting for forecast</p>
+            <div class="metric-grid">
+              <div class="metric"><span>Rain</span><strong id="rain">--</strong></div>
+              <div class="metric"><span>Wind</span><strong id="wind">--</strong></div>
+              <div class="metric"><span>Confidence</span><strong id="confidence">--</strong></div>
+              <div class="metric"><span>Humidity</span><strong id="humidity">--</strong></div>
+            </div>
+            <a class="action-link primary osm-link" id="osmLink" target="_blank" rel="noreferrer" href="#">Open in OpenStreetMap</a>
+          </article>
+        </section>
+      </section>
+      <footer class="app-footer"><p>Developed by Vishnu Vardhan Burri. All rights reserved.</p></footer>
+    </main>
+    <script src="./script.js"></script>
+  </body>
+</html>

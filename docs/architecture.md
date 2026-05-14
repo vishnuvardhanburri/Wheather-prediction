@@ -24,11 +24,17 @@ flowchart LR
 3. On submit, the frontend redirects to `/forecast.html?city=<place>`.
 4. `/api/predict?city=<place>` resolves coordinates, fetches forecast data, and runs Python scoring.
 5. The dashboard renders current weather, six-day forecast, confidence, model trace, features, and pipeline status.
+6. Secondary pages reuse the same `/api/predict` payload to render hourly forecast, alerts, map, explanations, and printable reports.
 
 ## Pages
 
 - `index.html`: landing and search entry.
 - `forecast.html`: forecast dashboard.
+- `hourly.html`: next-24-hour forecast.
+- `alerts.html`: rule-based weather risk view.
+- `map.html`: coordinate and map handoff.
+- `explanation.html`: model explanation signals.
+- `report.html`: printable forecast report and JSON export.
 - `models.html`: model comparison, feature importance, per-model trace.
 - `pipeline.html`: service flow, API/runtime metadata, pipeline status.
 

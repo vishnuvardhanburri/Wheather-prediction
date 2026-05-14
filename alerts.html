@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alerts | Weather Prediction Using Machine Learning</title>
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app subpage">
+      <nav class="topbar page-topbar" aria-label="Application navigation">
+        <a class="brand" href="/"><span class="brand-mark">W</span><span><strong>WeatherML</strong><small>Python AIML System</small></span></a>
+        <div class="nav-actions">
+          <a data-city-link="forecast.html" href="/forecast.html">Forecast</a>
+          <a data-city-link="hourly.html" href="/hourly.html">Hourly</a>
+          <a class="active" data-city-link="alerts.html" href="/alerts.html">Alerts</a>
+          <a data-city-link="map.html" href="/map.html">Map</a>
+          <a data-city-link="models.html" href="/models.html">Models</a>
+          <a data-city-link="pipeline.html" href="/pipeline.html">Pipeline</a>
+        </div>
+      </nav>
+      <section class="page-shell">
+        <div class="page-head">
+          <div><p class="eyebrow">Risk workspace</p><h1>Weather risk alerts</h1><p class="lede">Rule-based alert signals computed from live forecast data and the Python scoring layer.</p></div>
+          <form class="search-panel compact-search" id="searchForm">
+            <label for="cityInput">City name</label>
+            <div class="search-row"><input id="cityInput" name="city" autocomplete="off" placeholder="Search any place" /><button type="submit">Check</button></div>
+            <div class="search-results" id="searchResults" hidden></div>
+          </form>
+        </div>
+        <section class="panel">
+          <div class="section-head"><div><p class="eyebrow">Triggered rules</p><h2 id="cityName">Alerts</h2></div><a class="pill link-pill" data-city-link="explanation.html" href="/explanation.html">Why</a></div>
+          <p id="region" class="muted">Loading location</p>
+          <div class="alert-grid" id="alertsGrid"></div>
+        </section>
+      </section>
+      <footer class="app-footer"><p>Developed by Vishnu Vardhan Burri. All rights reserved.</p></footer>
+    </main>
+    <script src="./script.js"></script>
+  </body>
+</html>

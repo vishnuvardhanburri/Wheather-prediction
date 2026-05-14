@@ -16,6 +16,9 @@
         </a>
         <div class="nav-actions">
           <a class="active" data-city-link="forecast.html" href="/forecast.html">Forecast</a>
+          <a data-city-link="hourly.html" href="/hourly.html">Hourly</a>
+          <a data-city-link="alerts.html" href="/alerts.html">Alerts</a>
+          <a data-city-link="map.html" href="/map.html">Map</a>
           <a data-city-link="models.html" href="/models.html">Models</a>
           <a data-city-link="pipeline.html" href="/pipeline.html">Pipeline</a>
         </div>
@@ -74,8 +77,18 @@
                 <p class="eyebrow">Forecast output</p>
                 <h2>Forecast curve</h2>
               </div>
-              <a class="pill link-pill" id="modelsLink" data-city-link="models.html" href="/models.html">Model trace</a>
+              <div class="inline-actions">
+                <a class="pill link-pill" data-city-link="hourly.html" href="/hourly.html">Hourly</a>
+                <a class="pill link-pill" data-city-link="alerts.html" href="/alerts.html">Alerts</a>
+                <a class="pill link-pill" id="modelsLink" data-city-link="models.html" href="/models.html">Model trace</a>
+                <a class="pill link-pill" data-city-link="report.html" href="/report.html">Report</a>
+              </div>
             </div>
+            <div class="hero-actions panel-actions">
+              <button class="action-link" id="saveFavorite" type="button">Save favorite</button>
+              <button class="action-link" id="downloadJson" type="button">Download JSON</button>
+            </div>
+            <div class="favorites-list" id="favoritesList"></div>
             <div class="chart" id="tempChart" aria-label="Temperature and rain forecast chart"></div>
             <div class="forecast-list" id="forecastList"></div>
           </article>

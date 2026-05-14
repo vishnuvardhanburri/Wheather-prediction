@@ -38,7 +38,7 @@ WEATHER_CODES = {
 def _get_json(url: str, params: dict[str, Any], timeout: int = 8) -> dict[str, Any]:
     query = urlencode(params, doseq=True)
     with urlopen(f"{url}?{query}", timeout=timeout) as response:
-      return json.loads(response.read().decode("utf-8"))
+        return json.loads(response.read().decode("utf-8"))
 
 
 def _condition(code: int | None, rain: int) -> str:
@@ -106,7 +106,9 @@ class WeatherEnsemble:
         location = self._resolve_location(city)
         raw = self._fetch_forecast(location)
         forecast = self._shape_forecast(raw)
+        hourly = self._shape_hourly(raw)
         current = forecast[0]
+        alerts = self._build_alerts(current, forecast, hourly)
         elapsed_ms = max(18, round((perf_counter() - started) * 1000))
 
         return {
@@ -121,6 +123,9 @@ class WeatherEnsemble:
             },
             "current": current,
             "forecast": forecast,
+            "hourly": hourly,
+            "alerts": alerts,
+            "explanation": self._explain(current, forecast, alerts),
             "models": self.model_scores,
             "features": self.feature_importance,
             "pipeline": [
@@ -155,7 +160,17 @@ class WeatherEnsemble:
                     "relative_humidity_2m",
                     "pressure_msl",
                     "wind_speed_10m",
+                    "wind_gusts_10m",
                     "weather_code",
+                ],
+                "hourly": [
+                    "temperature_2m",
+                    "relative_humidity_2m",
+                    "precipitation_probability",
+                    "weather_code",
+                    "pressure_msl",
+                    "wind_speed_10m",
+                    "wind_gusts_10m",
                 ],
                 "daily": [
                     "weather_code",
@@ -163,8 +178,10 @@ class WeatherEnsemble:
                     "temperature_2m_min",
                     "precipitation_probability_max",
                     "wind_speed_10m_max",
+                    "wind_gusts_10m_max",
                 ],
                 "forecast_days": 6,
+                "forecast_hours": 48,
                 "timezone": "auto",
             },
         )
@@ -177,6 +194,7 @@ class WeatherEnsemble:
         lows = daily.get("temperature_2m_min", [])
         rain = daily.get("precipitation_probability_max", [])
         wind = daily.get("wind_speed_10m_max", [])
+        gusts = daily.get("wind_gusts_10m_max", [])
         codes = daily.get("weather_code", [])
 
         forecast = []
@@ -190,6 +208,7 @@ class WeatherEnsemble:
                 "rain": round(rain[index] or 0),
                 "humidity": round(current.get("relative_humidity_2m", 60) if index == 0 else max(35, min(95, 55 + (rain[index] or 0) * 0.35))),
                 "wind": round(current.get("wind_speed_10m", wind[index]) if index == 0 else wind[index]),
+                "gust": round(current.get("wind_gusts_10m", gusts[index] if index < len(gusts) else wind[index])),
                 "pressure": round(current.get("pressure_msl", 1012)),
                 "weatherCode": codes[index] if index < len(codes) else None,
             }
@@ -199,6 +218,66 @@ class WeatherEnsemble:
             forecast.append(shaped)
 
         return forecast
+
+    def _shape_hourly(self, raw: dict[str, Any]) -> list[dict[str, Any]]:
+        hourly = raw.get("hourly", {})
+        times = hourly.get("time", [])[:24]
+        temps = hourly.get("temperature_2m", [])[:24]
+        humidity = hourly.get("relative_humidity_2m", [])[:24]
+        rain = hourly.get("precipitation_probability", [])[:24]
+        codes = hourly.get("weather_code", [])[:24]
+        pressure = hourly.get("pressure_msl", [])[:24]
+        wind = hourly.get("wind_speed_10m", [])[:24]
+        gusts = hourly.get("wind_gusts_10m", [])[:24]
+
+        rows = []
+        for index, time in enumerate(times):
+            chance = round(rain[index] or 0)
+            temp = round(temps[index])
+            row = {
+                "time": time,
+                "hour": time[-5:],
+                "temperature": temp,
+                "humidity": round(humidity[index] if index < len(humidity) else 60),
+                "rain": chance,
+                "pressure": round(pressure[index] if index < len(pressure) else 1012),
+                "wind": round(wind[index] if index < len(wind) else 0),
+                "gust": round(gusts[index] if index < len(gusts) else 0),
+                "weatherCode": codes[index] if index < len(codes) else None,
+            }
+            row["condition"] = _condition(row["weatherCode"], chance)
+            rows.append(row)
+        return rows
+
+    def _build_alerts(self, current: dict[str, Any], forecast: list[dict[str, Any]], hourly: list[dict[str, Any]]) -> list[dict[str, str]]:
+        alerts = []
+        max_rain = max([day["rain"] for day in forecast] + [0])
+        max_wind = max([day.get("gust", day["wind"]) for day in forecast] + [0])
+        max_temp = max([day["temperatureMax"] for day in forecast] + [current["temperature"]])
+        storm_hours = [hour for hour in hourly if hour.get("weatherCode") in {95, 96, 99}]
+
+        if storm_hours:
+            alerts.append({"level": "High", "title": "Thunderstorm watch", "detail": f"{len(storm_hours)} storm-risk hours detected in the next 24 hours."})
+        if max_rain >= 70:
+            alerts.append({"level": "High", "title": "Heavy rain risk", "detail": f"Rain probability peaks near {max_rain}% in the six-day window."})
+        if max_wind >= 45:
+            alerts.append({"level": "Medium", "title": "High wind risk", "detail": f"Peak gusts are around {max_wind} km/h."})
+        if max_temp >= 38:
+            alerts.append({"level": "Medium", "title": "Heat risk", "detail": f"Maximum temperature reaches {max_temp}°C."})
+        if not alerts:
+            alerts.append({"level": "Low", "title": "No major weather risk", "detail": "Current model run shows no severe threshold breach."})
+        return alerts
+
+    def _explain(self, current: dict[str, Any], forecast: list[dict[str, Any]], alerts: list[dict[str, str]]) -> list[dict[str, Any]]:
+        temp_spread = abs(current["temperatureMax"] - current["temperatureMin"])
+        rain_peak = max(day["rain"] for day in forecast)
+        wind_peak = max(day.get("gust", day["wind"]) for day in forecast)
+        return [
+            {"signal": "Rain uncertainty", "value": f"{rain_peak}%", "impact": "Higher rain probability lowers confidence and pushes alert severity up."},
+            {"signal": "Daily temperature range", "value": f"{temp_spread}°C", "impact": "Larger daily spread increases model uncertainty for near-surface temperature."},
+            {"signal": "Wind and gust pressure", "value": f"{wind_peak} km/h", "impact": "Stronger wind or gusts increase operational risk and reduce confidence."},
+            {"signal": "Alert load", "value": str(len(alerts)), "impact": "More triggered alert rules indicate a less stable forecast window."},
+        ]
 
     @staticmethod
     def _location_summary(item: dict[str, Any]) -> dict[str, Any]:

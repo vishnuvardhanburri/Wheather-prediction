@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Report | Weather Prediction Using Machine Learning</title>
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app subpage">
+      <nav class="topbar page-topbar no-print" aria-label="Application navigation">
+        <a class="brand" href="/"><span class="brand-mark">W</span><span><strong>WeatherML</strong><small>Python AIML System</small></span></a>
+        <div class="nav-actions"><a data-city-link="forecast.html" href="/forecast.html">Forecast</a><a data-city-link="models.html" href="/models.html">Models</a><a class="active" data-city-link="report.html" href="/report.html">Report</a></div>
+      </nav>
+      <section class="page-shell report-shell">
+        <div class="section-head">
+          <div><p class="eyebrow">Forecast report</p><h1 id="cityName">WeatherML Report</h1><p id="region" class="lede">Loading report</p></div>
+          <div class="hero-actions no-print"><button class="action-link primary" id="printReport" type="button">Print / Save PDF</button><button class="action-link" id="downloadJson" type="button">Download JSON</button></div>
+        </div>
+        <section class="content-grid">
+          <article class="panel"><h2>Forecast</h2><div class="forecast-list" id="forecastList"></div></article>
+          <aside class="side-stack"><article class="panel"><h2>Alerts</h2><div class="alert-grid" id="alertsGrid"></div></article><article class="panel"><h2>Explanation</h2><div class="explain-grid" id="explanationGrid"></div></article></aside>
+        </section>
+      </section>
+      <footer class="app-footer"><p>Developed by Vishnu Vardhan Burri. All rights reserved.</p></footer>
+    </main>
+    <script src="./script.js"></script>
+  </body>
+</html>
