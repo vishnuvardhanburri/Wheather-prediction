@@ -32,6 +32,13 @@ The generated registry includes:
 - ridge-regression feature weights
 - MAE, RMSE, R², and score for each model
 
+Static review artifacts are written to `frontend/artifacts/training/`:
+
+- `model-card.md`
+- `metrics.json`
+- `predictions.csv`
+- `feature_weights.csv`
+
 The API exposes this through:
 
 ```bash
@@ -39,3 +46,4 @@ curl "http://127.0.0.1:4173/api/model-registry"
 ```
 
 The Models page reads the same registry through `/api/predict`.
+The Training page is available at `/training.html`.

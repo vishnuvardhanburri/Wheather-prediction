@@ -247,7 +247,7 @@ class WeatherEnsemble:
                     "wind_speed_10m_max",
                     "wind_gusts_10m_max",
                 ],
-                "forecast_days": 6,
+                "forecast_days": 14,
                 "forecast_hours": 48,
                 "timezone": "auto",
             },
@@ -326,7 +326,7 @@ class WeatherEnsemble:
         if storm_hours:
             alerts.append({"level": "High", "title": "Thunderstorm watch", "detail": f"{len(storm_hours)} storm-risk hours detected in the next 24 hours."})
         if max_rain >= 70:
-            alerts.append({"level": "High", "title": "Heavy rain risk", "detail": f"Rain probability peaks near {max_rain}% in the six-day window."})
+            alerts.append({"level": "High", "title": "Heavy rain risk", "detail": f"Rain probability peaks near {max_rain}% in the future forecast window."})
         if max_wind >= 45:
             alerts.append({"level": "Medium", "title": "High wind risk", "detail": f"Peak gusts are around {max_wind} km/h."})
         if max_temp >= 38:

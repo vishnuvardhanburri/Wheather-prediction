@@ -626,10 +626,10 @@ h1 {
 
 .chart {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
   align-items: end;
   gap: 12px;
   height: 280px;
+  overflow-x: auto;
   border-radius: 8px;
   background:
     linear-gradient(#e8f0f6 1px, transparent 1px) 0 0 / 100% 25%,
@@ -1136,6 +1136,11 @@ h1 {
   color: var(--muted);
   font-size: 13px;
   line-height: 1.5;
+}
+
+.artifact-list {
+  display: grid;
+  gap: 10px;
 }
 
 .pipeline-page-grid {

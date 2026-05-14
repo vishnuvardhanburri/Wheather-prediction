@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#07111f" />
+    <title>Training | Weather Prediction Using Machine Learning</title>
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app subpage">
+      <nav class="topbar page-topbar" aria-label="Application navigation">
+        <a class="brand" href="/" aria-label="WeatherML home">
+          <span class="brand-mark">W</span>
+          <span><strong>WeatherML</strong><small>Python AIML System</small></span>
+        </a>
+        <div class="nav-actions">
+          <a data-city-link="forecast.html" href="/forecast.html">Forecast</a>
+          <a data-city-link="models.html" href="/models.html">Models</a>
+          <a class="active" href="/training.html">Training</a>
+          <a data-city-link="pipeline.html" href="/pipeline.html">Pipeline</a>
+        </div>
+      </nav>
+
+      <section class="page-shell">
+        <div class="page-head">
+          <div>
+            <p class="eyebrow">Historical model lab</p>
+            <h1>Training artifacts and evaluation</h1>
+            <p class="lede">Inspect the historical archive benchmark, model card, feature weights, and held-out prediction file used by the WeatherML scoring layer.</p>
+          </div>
+          <div class="panel about-card">
+            <span class="pill">Model card</span>
+            <h2><a href="/artifacts/training/model-card.md">Open training report</a></h2>
+            <p class="muted">Generated from Open-Meteo historical archive data.</p>
+          </div>
+        </div>
+
+        <section class="models-layout">
+          <article class="panel span-2">
+            <div class="section-head compact">
+              <div><p class="eyebrow">Registry</p><h2>Training summary</h2></div>
+              <span class="pill" id="trainingGenerated">Loading</span>
+            </div>
+            <div class="registry-grid" id="trainingRegistry"></div>
+          </article>
+
+          <article class="panel">
+            <div class="section-head compact">
+              <div><p class="eyebrow">Benchmarks</p><h2>Evaluation metrics</h2></div>
+            </div>
+            <div class="model-list" id="trainingModelList"></div>
+          </article>
+
+          <article class="panel">
+            <div class="section-head compact">
+              <div><p class="eyebrow">Artifacts</p><h2>Review files</h2></div>
+            </div>
+            <div class="artifact-list">
+              <a class="action-link primary" href="/artifacts/training/model-card.md">Model card</a>
+              <a class="action-link" href="/artifacts/training/metrics.json">Metrics JSON</a>
+              <a class="action-link" href="/artifacts/training/predictions.csv">Predictions CSV</a>
+              <a class="action-link" href="/artifacts/training/feature_weights.csv">Feature weights CSV</a>
+            </div>
+          </article>
+        </section>
+      </section>
+      <footer class="app-footer"><p>Developed by Vishnu Vardhan Burri. All rights reserved. Live demo: <a href="https://wheather-prediction.onrender.com/">wheather-prediction.onrender.com</a></p></footer>
+    </main>
+    <script src="./script.js"></script>
+  </body>
+</html>

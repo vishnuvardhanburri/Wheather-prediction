@@ -94,8 +94,8 @@ function installMobileNav() {
     ["Forecast", "forecast.html"],
     ["Hourly", "hourly.html"],
     ["Alerts", "alerts.html"],
-    ["Map", "map.html"],
-    ["Saved", "favorites.html"],
+    ["Models", "models.html"],
+    ["Training", "training.html"],
   ];
   const current = window.location.pathname.split("/").pop() || "index.html";
   const nav = document.createElement("nav");
@@ -113,12 +113,21 @@ function installMobileNav() {
 
 function installAboutLink() {
   document.querySelectorAll(".nav-actions").forEach((nav) => {
-    if (nav.querySelector('[href="/about.html"]')) return;
-    const link = document.createElement("a");
-    link.href = "/about.html";
-    link.textContent = "About";
-    if (window.location.pathname.endsWith("/about.html")) link.className = "active";
-    nav.appendChild(link);
+    if (!nav.querySelector('[href="/training.html"]')) {
+      const training = document.createElement("a");
+      training.href = "/training.html";
+      training.textContent = "Training";
+      if (window.location.pathname.endsWith("/training.html")) training.className = "active";
+      nav.appendChild(training);
+    }
+
+    if (!nav.querySelector('[href="/about.html"]')) {
+      const link = document.createElement("a");
+      link.href = "/about.html";
+      link.textContent = "About";
+      if (window.location.pathname.endsWith("/about.html")) link.className = "active";
+      nav.appendChild(link);
+    }
   });
 }
 
@@ -258,6 +267,7 @@ function renderPrediction(data) {
 function renderForecast(forecast) {
   const chart = document.getElementById("tempChart");
   if (chart) {
+    chart.style.gridTemplateColumns = `repeat(${forecast.length}, minmax(54px, 1fr))`;
     const maxTemp = Math.max(...forecast.map((day) => day.temperatureMax || day.temperature));
     chart.innerHTML = forecast
       .map((day) => {
@@ -352,6 +362,40 @@ function renderModelRegistry(registry) {
       <p>through ${range.end || "--"} · generated ${registry.generated_at || "--"}</p>
     </article>
   `;
+}
+
+function renderTrainingRegistry(registry) {
+  renderModelRegistry(registry);
+  setText("trainingGenerated", registry.generated_at || "Generated");
+  const node = document.getElementById("trainingModelList");
+  if (!node) return;
+  node.innerHTML = (registry.models || [])
+    .map(
+      (item) => `
+        <div class="score-row">
+          <header><strong>${item.model}</strong><span>MAE ${formatTempDelta(item.mae)}</span></header>
+          <div class="bar"><i style="width:${Math.round(item.score || 0)}%"></i></div>
+          <p class="score-meta">RMSE ${formatTempDelta(item.rmse)} · R² ${item.r2} · Score ${item.score}</p>
+        </div>
+      `,
+    )
+    .join("");
+}
+
+async function renderTrainingPage() {
+  const node = document.getElementById("trainingRegistry");
+  if (!node) return;
+  try {
+    const response = await fetch("/api/model-registry");
+    const registry = await response.json();
+    if (!response.ok || registry.error || registry.available === false) {
+      throw new Error(registry.message || "Training registry unavailable.");
+    }
+    registry.available = true;
+    renderTrainingRegistry(registry);
+  } catch (error) {
+    node.innerHTML = `<article class="registry-card"><span>Status</span><strong>Unavailable</strong><p>${error instanceof Error ? error.message : "Unable to load training registry."}</p></article>`;
+  }
 }
 
 function renderTrace(trace) {
@@ -589,6 +633,7 @@ function targetPageForSubmit() {
   if (path.endsWith("/timeline.html")) return "timeline.html";
   if (path.endsWith("/favorites.html")) return "favorites.html";
   if (path.endsWith("/compare.html")) return "compare.html";
+  if (path.endsWith("/training.html")) return "training.html";
   return "forecast.html";
 }
 
@@ -719,6 +764,8 @@ if (window.location.pathname.endsWith("/compare.html")) {
   renderComparePage();
 } else if (window.location.pathname.endsWith("/favorites.html")) {
   renderFavoritesDashboard();
+} else if (window.location.pathname.endsWith("/training.html")) {
+  renderTrainingPage();
 } else if (autoPredictionPages.some((page) => window.location.pathname.endsWith(page))) {
   submit(initialCity);
 } else if (window.location.pathname === "/" || window.location.pathname.endsWith("/index.html")) {

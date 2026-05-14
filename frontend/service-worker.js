@@ -1,4 +1,4 @@
-const CACHE_NAME = "weatherml-shell-v2";
+const CACHE_NAME = "weatherml-shell-v3";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -14,6 +14,7 @@ const APP_SHELL = [
   "/timeline.html",
   "/explanation.html",
   "/about.html",
+  "/training.html",
   "/styles.css",
   "/script.js",
   "/icon.svg",
@@ -21,6 +22,10 @@ const APP_SHELL = [
   "/manifest.webmanifest",
   "/robots.txt",
   "/sitemap.xml",
+  "/artifacts/training/model-card.md",
+  "/artifacts/training/metrics.json",
+  "/artifacts/training/predictions.csv",
+  "/artifacts/training/feature_weights.csv",
 ];
 
 self.addEventListener("install", (event) => {

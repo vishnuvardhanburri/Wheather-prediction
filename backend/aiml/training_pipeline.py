@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import math
 import sys
@@ -17,6 +18,7 @@ from backend.aiml.weather_engine import GEOCODE_URL, _get_json
 
 ARCHIVE_URL = "https://archive-api.open-meteo.com/v1/archive"
 REGISTRY_PATH = Path(__file__).with_name("model_registry.json")
+DEFAULT_ARTIFACTS_DIR = Path(__file__).resolve().parents[2] / "frontend" / "artifacts" / "training"
 FEATURES = [
     "previous_mean_temp",
     "previous_max_temp",
@@ -193,7 +195,7 @@ def predict_linear(weights: list[float], rows: list[dict[str, Any]]) -> list[flo
     return predictions
 
 
-def evaluate(rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, float]]:
+def evaluate(rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, float], list[dict[str, Any]]]:
     train, test = split_rows(rows)
     actuals = [row["target"] for row in test]
     seasonal_predictions = seasonal_baseline(train, test)
@@ -213,18 +215,31 @@ def evaluate(rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str
     ]
     model_rows.sort(key=lambda item: item["mae"])
     feature_weights = {name: round(weight, 4) for name, weight in zip(FEATURES, weights[1:])}
-    return model_rows, feature_weights
+    prediction_rows = []
+    for index, row in enumerate(test):
+        prediction_rows.append(
+            {
+                "date": row["date"],
+                "actual_temperature_max": round(actuals[index], 2),
+                "seasonal_baseline": round(seasonal_predictions[index], 2),
+                "persistence": round(persistence_predictions[index], 2),
+                "ridge_regression": round(linear_predictions[index], 2),
+                "hybrid_ensemble": round(ensemble_predictions[index], 2),
+                "hybrid_error": round(ensemble_predictions[index] - actuals[index], 2),
+            },
+        )
+    return model_rows, feature_weights, prediction_rows
 
 
-def build_registry(city: str, days: int) -> dict[str, Any]:
+def build_training_bundle(city: str, days: int) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     end = date.today() - timedelta(days=7)
     start = end - timedelta(days=days)
     location = resolve_location(city)
     history = fetch_history(location, start, end)
     rows = build_rows(history)
-    models, feature_weights = evaluate(rows)
+    models, feature_weights, prediction_rows = evaluate(rows)
     train_rows, test_rows = split_rows(rows)
-    return {
+    registry = {
         "generated_at": date.today().isoformat(),
         "source": "Open-Meteo Historical Weather API",
         "source_url": "https://archive-api.open-meteo.com/v1/archive",
@@ -239,6 +254,87 @@ def build_registry(city: str, days: int) -> dict[str, Any]:
         "feature_weights": feature_weights,
         "models": models,
     }
+    return registry, prediction_rows
+
+
+def build_registry(city: str, days: int) -> dict[str, Any]:
+    registry, _ = build_training_bundle(city, days)
+    return registry
+
+
+def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
+    if not rows:
+        return
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(rows[0].keys()))
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def write_model_card(path: Path, registry: dict[str, Any]) -> None:
+    best = registry["models"][0]
+    model_rows = "\n".join(
+        f"| {item['model']} | {item['mae']} | {item['rmse']} | {item['r2']} | {item['score']} |"
+        for item in registry["models"]
+    )
+    weights = "\n".join(
+        f"| {name} | {weight} |"
+        for name, weight in registry["feature_weights"].items()
+    )
+    path.write_text(
+        f"""# WeatherML Model Card
+
+## Overview
+
+WeatherML benchmarks next-day maximum temperature models using historical daily weather data.
+
+## Training Data
+
+- Source: [{registry['source']}]({registry['source_url']})
+- City: {registry['city']}, {registry['region']}
+- Date range: {registry['date_range']['start']} to {registry['date_range']['end']}
+- Rows: {registry['rows']}
+- Train rows: {registry['train_rows']}
+- Test rows: {registry['test_rows']}
+- Target: `{registry['target']}`
+
+## Best Model
+
+- Model: {best['model']}
+- MAE: {best['mae']}°C
+- RMSE: {best['rmse']}°C
+- R²: {best['r2']}
+- Score: {best['score']}
+
+## Benchmarks
+
+| Model | MAE °C | RMSE °C | R² | Score |
+| --- | ---: | ---: | ---: | ---: |
+{model_rows}
+
+## Feature Weights
+
+| Feature | Ridge weight |
+| --- | ---: |
+{weights}
+
+## Notes
+
+This registry is a benchmark artifact for explainability and portfolio review. It is not a safety-critical weather warning system.
+""",
+        encoding="utf-8",
+    )
+
+
+def write_artifacts(registry: dict[str, Any], prediction_rows: list[dict[str, Any]], artifacts_dir: Path) -> None:
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    write_csv(artifacts_dir / "predictions.csv", prediction_rows)
+    write_csv(
+        artifacts_dir / "feature_weights.csv",
+        [{"feature": name, "weight": weight} for name, weight in registry["feature_weights"].items()],
+    )
+    (artifacts_dir / "metrics.json").write_text(json.dumps(registry, indent=2), encoding="utf-8")
+    write_model_card(artifacts_dir / "model-card.md", registry)
 
 
 def main() -> None:
@@ -246,11 +342,13 @@ def main() -> None:
     parser.add_argument("--city", default="Hyderabad", help="City used for the training registry.")
     parser.add_argument("--days", type=int, default=730, help="Historical lookback window.")
     parser.add_argument("--output", default=str(REGISTRY_PATH), help="Output model registry JSON path.")
+    parser.add_argument("--artifacts-dir", default=str(DEFAULT_ARTIFACTS_DIR), help="Directory for model card and evaluation artifacts.")
     args = parser.parse_args()
 
-    registry = build_registry(args.city, args.days)
+    registry, prediction_rows = build_training_bundle(args.city, args.days)
     output = Path(args.output)
     output.write_text(json.dumps(registry, indent=2), encoding="utf-8")
+    write_artifacts(registry, prediction_rows, Path(args.artifacts_dir))
     best = registry["models"][0]
     print(
         f"Trained {len(registry['models'])} model benchmarks for {registry['city']} "

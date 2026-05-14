@@ -5,6 +5,7 @@ Use this before demos, submissions, or deployment updates.
 ## Product
 
 - Search works for a real city.
+- Forecast displays a 14-day future window.
 - Forecast, Hourly, Alerts, Map, Models, Pipeline, Report, Compare, Timeline, Favorites, and About pages load.
 - Mobile bottom navigation is visible below 560px.
 - Metric/imperial unit switch updates cards, charts, text, and report surfaces.
@@ -14,6 +15,7 @@ Use this before demos, submissions, or deployment updates.
 
 - `/api/health` returns `ok: true`.
 - `/api/model-registry` returns generated training metrics.
+- `/training.html` loads training metrics and artifact links.
 - `/api/search?q=Hyderabad` returns location results.
 - `/api/predict?city=Hyderabad` returns forecast, hourly, alerts, explanation, models, features, pipeline, and meta sections.
 

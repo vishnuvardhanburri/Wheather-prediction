@@ -41,13 +41,13 @@ Returns matching locations from live geocoding:
 GET /api/predict?city=Visakhapatnam
 ```
 
-Returns the resolved location, current forecast, six-day forecast, model scores, feature importance, pipeline status, and runtime metadata.
+Returns the resolved location, current forecast, 14-day future forecast, model scores, feature importance, pipeline status, and runtime metadata.
 
 Key response sections:
 
 - `profile`: resolved place, region, country, coordinates, timezone.
 - `current`: current model-scored weather snapshot.
-- `forecast`: six-day forecast.
+- `forecast`: 14-day future forecast.
 - `hourly`: next 24 hours of temperature, rain probability, wind, humidity, pressure, and weather code.
 - `alerts`: rule-based weather alerts.
 - `explanation`: plain-language model explanation signals.

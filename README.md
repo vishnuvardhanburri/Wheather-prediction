@@ -6,7 +6,7 @@
 ![PWA](https://img.shields.io/badge/PWA-Enabled-5a0fc8?style=for-the-badge)
 ![Rights](https://img.shields.io/badge/Rights-Reserved-111827?style=for-the-badge)
 
-WeatherML is a standalone Python AIML weather prediction web app. It lets a user search any city, district, airport, or region, resolves the place with live geocoding, pulls current forecast data, and renders a multi-page dashboard with model confidence, forecast charts, model comparison, feature importance, and pipeline status.
+WeatherML is a standalone Python AIML weather prediction web app. It lets a user search any city, district, airport, or region, resolves the place with live geocoding, pulls current and future forecast data, and renders a multi-page dashboard with model confidence, forecast charts, model comparison, feature importance, and pipeline status.
 
 Developed by Vishnu Vardhan Burri. All rights reserved.
 
@@ -41,7 +41,7 @@ Most beginner weather prediction projects stop at a notebook or a basic form. Th
 ## Features
 
 - Live global search through `/api/search`
-- Six-day forecast through `/api/predict`
+- 14-day future forecast through `/api/predict`
 - Deployment health check through `/api/health`
 - Historical model registry through `/api/model-registry`
 - Multi-page frontend: Home, Forecast, Models, Pipeline
@@ -135,6 +135,7 @@ weather-prediction-ml/
     timeline.html                  # Cinematic hourly timeline
     favorites.html                 # Saved places dashboard
     about.html                     # Live demo and project details
+    training.html                  # Historical training and evaluation page
     report.html                    # Printable/downloadable report
     models.html                    # Models and explainability page
     pipeline.html                  # Pipeline status page
@@ -142,6 +143,7 @@ weather-prediction-ml/
     styles.css                     # UI styling
     manifest.webmanifest           # PWA install metadata
     service-worker.js              # Offline shell cache
+    artifacts/training/            # Model card, metrics, predictions, weights
   backend/aiml/weather_engine.py   # Geocoding, forecast ingest, AIML scoring
   backend/aiml/training_pipeline.py # Historical archive training pipeline
   backend/aiml/model_registry.json # Generated model benchmark registry
@@ -275,6 +277,13 @@ python3 backend/aiml/training_pipeline.py --city Hyderabad --days 730
 ```
 
 The generated registry powers the Models page and `/api/model-registry`.
+
+Generated review artifacts:
+
+- `frontend/artifacts/training/model-card.md`
+- `frontend/artifacts/training/metrics.json`
+- `frontend/artifacts/training/predictions.csv`
+- `frontend/artifacts/training/feature_weights.csv`
 
 ## Docker
 

@@ -26,7 +26,7 @@ flowchart LR
 2. The frontend calls `/api/search?q=<place>` for live location suggestions.
 3. On submit, the frontend redirects to `/forecast.html?city=<place>`.
 4. `/api/predict?city=<place>` resolves coordinates, fetches forecast data, and runs Python scoring.
-5. The dashboard renders current weather, six-day forecast, confidence, model trace, features, and pipeline status.
+5. The dashboard renders current weather, 14-day future forecast, confidence, model trace, features, and pipeline status.
 6. Secondary pages reuse the same `/api/predict` payload to render hourly forecast, alerts, map, explanations, and printable reports.
 7. The optional training pipeline fetches Open-Meteo historical archive data and writes `backend/aiml/model_registry.json`.
 
@@ -52,7 +52,7 @@ flowchart LR
 ## External APIs
 
 - Open-Meteo Geocoding API: resolves place names into coordinates.
-- Open-Meteo Forecast API: provides current and six-day weather data.
+- Open-Meteo Forecast API: provides current and 14-day future weather data.
 - Open-Meteo Historical Weather API: provides archive data for model benchmark training.
 
 Both APIs can be used without an API key.

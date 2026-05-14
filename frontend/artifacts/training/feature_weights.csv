@@ -1,0 +1,9 @@
+feature,weight
+previous_mean_temp,1.0179
+previous_max_temp,0.2088
+previous_min_temp,-0.3386
+previous_precipitation,0.0131
+previous_wind_speed,0.0381
+previous_wind_gust,-0.0367
+day_of_year_sin,0.5887
+day_of_year_cos,0.0464
