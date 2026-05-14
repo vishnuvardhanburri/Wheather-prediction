@@ -760,6 +760,20 @@ h1 {
   font-size: 13px;
 }
 
+.app-footer {
+  width: min(1180px, calc(100% - 32px));
+  margin: 34px auto 0;
+  border-top: 1px solid rgba(148, 163, 184, 0.25);
+  padding: 20px 0 34px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.app-footer p {
+  margin: 0;
+}
+
 .pipeline {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

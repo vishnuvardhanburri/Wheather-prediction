@@ -16,10 +16,10 @@ http://127.0.0.1:4173
 
 ## LAN Demo
 
-Change the host in `server.py`:
+Run with `HOST=0.0.0.0`:
 
-```python
-run(host="0.0.0.0", port=4173)
+```bash
+HOST=0.0.0.0 PORT=4173 python3 server.py
 ```
 
 Then open the machine IP from another device on the same network.
@@ -33,5 +33,28 @@ For a real deployment, put the Python API behind:
 - request logging and uptime monitoring
 - cache for repeated geocoding lookups
 - environment-controlled host/port
+
+## Render
+
+Render web services must bind to `0.0.0.0` and use the `PORT` environment variable. This app already supports that.
+
+Settings:
+
+```text
+Build command: pip install -r requirements.txt
+Start command: python3 server.py
+Environment: HOST=0.0.0.0
+```
+
+## Railway
+
+Railway also provides a `PORT` variable and expects the app to listen on `0.0.0.0:$PORT`.
+
+Settings:
+
+```text
+Start command: python3 server.py
+Environment: HOST=0.0.0.0
+```
 
 The current version is intentionally dependency-light for demo, review, and portfolio use.

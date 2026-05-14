@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
@@ -61,4 +62,7 @@ def run(host: str = "127.0.0.1", port: int = 4173):
 
 
 if __name__ == "__main__":
-    run()
+    run(
+        host=os.environ.get("HOST", "127.0.0.1"),
+        port=int(os.environ.get("PORT", "4173")),
+    )

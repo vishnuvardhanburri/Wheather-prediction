@@ -2,7 +2,22 @@
 
 WeatherML is a standalone Python AIML weather prediction web app. It lets a user search any city, district, airport, or region, resolves the place with live geocoding, pulls current forecast data, and renders a multi-page dashboard with model confidence, forecast charts, model comparison, feature importance, and pipeline status.
 
+Developed by Vishnu Vardhan Burri. All rights reserved.
+
 ![Home screen](docs/images/home.png)
+
+## Real-Time Test
+
+The app was tested against live place search and forecast data from the Python API.
+
+```bash
+curl "http://127.0.0.1:4173/api/search?q=Visakhapatnam"
+curl "http://127.0.0.1:4173/api/predict?city=Visakhapatnam"
+```
+
+Live forecast UI:
+
+![Real-time forecast test](docs/images/forecast.png)
 
 ## Why We Built This
 
@@ -95,6 +110,47 @@ You can run it:
 - inside Docker or a Python process manager later
 
 Deployment notes: [docs/deployment.md](docs/deployment.md)
+
+## Make It Live
+
+### Option 1: Render
+
+1. Push this repo to GitHub.
+2. Open Render and create a new Web Service from the GitHub repo.
+3. Use these settings:
+   - Runtime: `Python`
+   - Build command: `pip install -r requirements.txt`
+   - Start command: `python3 server.py`
+   - Environment variable: `HOST=0.0.0.0`
+4. Render provides `PORT` automatically, and `server.py` reads it from the environment.
+5. After deploy, open the generated `.onrender.com` URL.
+
+### Option 2: Railway
+
+1. Create a Railway project from the GitHub repo.
+2. Set start command:
+
+```bash
+python3 server.py
+```
+
+3. Add environment variable:
+
+```text
+HOST=0.0.0.0
+```
+
+4. Railway provides `PORT`; the server reads it automatically.
+
+### Option 3: VPS
+
+```bash
+git clone https://github.com/vishnuvardhanburri/Wheather-prediction.git
+cd Wheather-prediction
+HOST=0.0.0.0 PORT=4173 python3 server.py
+```
+
+Then put Nginx or Caddy in front of port `4173` for HTTPS.
 
 ## API
 

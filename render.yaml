@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: weatherml
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python3 server.py
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
