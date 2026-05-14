@@ -17,6 +17,7 @@ def main():
     assert result["alerts"]
     assert result["explanation"]
     assert result["models"]
+    assert result["modelRegistry"]["available"] is True
     assert result["features"]
     assert result["meta"]["engine"] == "WeatherEnsemble-v2"
     assert (FRONTEND_DIR / "index.html").exists()

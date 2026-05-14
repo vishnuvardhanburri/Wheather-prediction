@@ -242,6 +242,7 @@ function renderPrediction(data) {
   renderForecast(forecast);
   renderModels(data.models || fallbackModels);
   renderFeatures(data.features || fallbackFeatures);
+  renderModelRegistry(data.modelRegistry || {});
   renderPipeline(data.pipeline || []);
   renderMeta(data.meta || {});
   renderTrace(current.modelTrace || {});
@@ -299,6 +300,7 @@ function renderModels(models) {
         <div class="score-row">
           <header><strong>${item.model}</strong><span>MAE ${formatTempDelta(item.mae)}</span></header>
           <div class="bar"><i style="width:${item.accuracy}%"></i></div>
+          ${item.rmse ? `<p class="score-meta">RMSE ${formatTempDelta(item.rmse)} · R² ${item.r2}</p>` : ""}
         </div>
       `,
     )
@@ -318,6 +320,38 @@ function renderFeatures(features) {
       `,
     )
     .join("");
+}
+
+function renderModelRegistry(registry) {
+  const node = document.getElementById("trainingRegistry");
+  if (!node) return;
+  if (!registry.available) {
+    node.innerHTML = `<article class="registry-card"><span>Status</span><strong>Not trained yet</strong><p>${registry.message || "Run the training pipeline to generate model metrics."}</p></article>`;
+    return;
+  }
+  const range = registry.date_range || {};
+  node.innerHTML = `
+    <article class="registry-card">
+      <span>Training city</span>
+      <strong>${registry.city}</strong>
+      <p>${registry.region || "Historical archive benchmark"}</p>
+    </article>
+    <article class="registry-card">
+      <span>Rows</span>
+      <strong>${registry.rows}</strong>
+      <p>${registry.train_rows} train · ${registry.test_rows} test</p>
+    </article>
+    <article class="registry-card">
+      <span>Target</span>
+      <strong>Next-day high</strong>
+      <p>${String(registry.target || "").replaceAll("_", " ")}</p>
+    </article>
+    <article class="registry-card">
+      <span>Window</span>
+      <strong>${range.start || "--"}</strong>
+      <p>through ${range.end || "--"} · generated ${registry.generated_at || "--"}</p>
+    </article>
+  `;
 }
 
 function renderTrace(trace) {

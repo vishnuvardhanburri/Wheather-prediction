@@ -13,7 +13,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Compile Python
-        run: python -m py_compile server.py backend/aiml/weather_engine.py
+        run: python -m py_compile server.py backend/aiml/weather_engine.py backend/aiml/training_pipeline.py
       - name: Validate frontend JavaScript
         run: |
           node --check frontend/script.js

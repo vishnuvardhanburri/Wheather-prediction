@@ -28,7 +28,7 @@
           <div>
             <p class="eyebrow">Model workspace</p>
             <h1>Model comparison and explainability</h1>
-            <p class="lede">Review model accuracy, MAE, feature importance, and the per-model trace for the selected place.</p>
+            <p class="lede">Review historical training metrics, model accuracy, MAE, feature importance, and the per-model trace for the selected place.</p>
           </div>
           <form class="search-panel compact-search" id="searchForm">
             <label for="cityInput">City name</label>
@@ -54,6 +54,12 @@
               <div><p class="eyebrow">Explainability</p><h2>Feature importance</h2></div>
             </div>
             <div class="feature-list" id="featureList"></div>
+          </article>
+          <article class="panel span-2">
+            <div class="section-head compact">
+              <div><p class="eyebrow">Historical training registry</p><h2>Archive benchmark</h2></div>
+            </div>
+            <div class="registry-grid" id="trainingRegistry"></div>
           </article>
           <article class="panel span-2">
             <div class="section-head compact">

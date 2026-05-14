@@ -53,6 +53,20 @@ class WeatherRequestHandler(SimpleHTTPRequestHandler):
                 self._send_json({"results": [], "error": True, "message": str(exc)}, status=502)
             return
 
+        if parsed.path == "/api/model-registry":
+            registry = ENGINE.model_registry()
+            if registry:
+                self._send_json(registry)
+            else:
+                self._send_json(
+                    {
+                        "available": False,
+                        "message": "Run python3 backend/aiml/training_pipeline.py to generate historical model metrics.",
+                    },
+                    status=404,
+                )
+            return
+
         if parsed.path == "/":
             self.path = "/index.html"
 

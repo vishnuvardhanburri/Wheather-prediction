@@ -13,6 +13,9 @@ flowchart LR
   PredictAPI --> Geo
   PredictAPI --> Forecast["Open-Meteo Forecast API"]
   Forecast --> Engine["Python AIML scoring engine"]
+  Archive["Open-Meteo Historical Archive"] --> Train["Training pipeline"]
+  Train --> Registry["model_registry.json"]
+  Registry --> Engine
   Engine --> Explain["Confidence, model trace, feature weights"]
   Explain --> UI
 ```
@@ -25,6 +28,7 @@ flowchart LR
 4. `/api/predict?city=<place>` resolves coordinates, fetches forecast data, and runs Python scoring.
 5. The dashboard renders current weather, six-day forecast, confidence, model trace, features, and pipeline status.
 6. Secondary pages reuse the same `/api/predict` payload to render hourly forecast, alerts, map, explanations, and printable reports.
+7. The optional training pipeline fetches Open-Meteo historical archive data and writes `backend/aiml/model_registry.json`.
 
 ## Pages
 
@@ -42,10 +46,13 @@ flowchart LR
 
 - `server.py`: HTTP server and API routing.
 - `backend/aiml/weather_engine.py`: geocoding, forecast ingest, AIML scoring, model metadata, explainability payload.
+- `backend/aiml/training_pipeline.py`: historical archive training and benchmark registry generation.
+- `backend/aiml/model_registry.json`: generated model benchmark metrics consumed by the API and Models page.
 
 ## External APIs
 
 - Open-Meteo Geocoding API: resolves place names into coordinates.
 - Open-Meteo Forecast API: provides current and six-day weather data.
+- Open-Meteo Historical Weather API: provides archive data for model benchmark training.
 
 Both APIs can be used without an API key.

@@ -13,6 +13,7 @@ Use this before demos, submissions, or deployment updates.
 ## Backend
 
 - `/api/health` returns `ok: true`.
+- `/api/model-registry` returns generated training metrics.
 - `/api/search?q=Hyderabad` returns location results.
 - `/api/predict?city=Hyderabad` returns forecast, hourly, alerts, explanation, models, features, pipeline, and meta sections.
 

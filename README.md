@@ -43,6 +43,7 @@ Most beginner weather prediction projects stop at a notebook or a basic form. Th
 - Live global search through `/api/search`
 - Six-day forecast through `/api/predict`
 - Deployment health check through `/api/health`
+- Historical model registry through `/api/model-registry`
 - Multi-page frontend: Home, Forecast, Models, Pipeline
 - Hourly forecast page for the next 24 hours
 - Weather risk alerts for storms, heavy rain, wind, and heat
@@ -58,6 +59,8 @@ Most beginner weather prediction projects stop at a notebook or a basic form. Th
 - Installable PWA shell with service worker caching for repeat visits
 - Mobile bottom navigation for Forecast, Hourly, Alerts, Map, and Saved pages
 - Python-side API response caching for repeated live forecast/geocoding calls
+- Historical training pipeline using Open-Meteo archive data
+- Model registry with train/test rows, MAE, RMSE, R², and feature weights
 - Favorites and recent city shortcuts in browser storage
 - Current weather card with temperature, rain chance, humidity, wind, confidence, latency, and health
 - Forecast chart and day cards
@@ -140,10 +143,13 @@ weather-prediction-ml/
     manifest.webmanifest           # PWA install metadata
     service-worker.js              # Offline shell cache
   backend/aiml/weather_engine.py   # Geocoding, forecast ingest, AIML scoring
+  backend/aiml/training_pipeline.py # Historical archive training pipeline
+  backend/aiml/model_registry.json # Generated model benchmark registry
   server.py                        # Python HTTP server and API routes
   media/                           # README screenshots and architecture image
   docs/                            # Architecture, API, and deployment notes
     quality-checklist.md           # Demo/deploy readiness checklist
+    training.md                    # Historical training workflow
   tests/smoke_test.py              # Basic backend smoke test
   Dockerfile                       # Container deployment
   LICENSE                          # All rights reserved license notice
@@ -260,6 +266,16 @@ node --check frontend/service-worker.js
 python3 tests/smoke_test.py
 ```
 
+## Train Historical Models
+
+The training pipeline pulls historical daily weather data, builds next-day high-temperature features, evaluates baseline and regression models, and writes `backend/aiml/model_registry.json`.
+
+```bash
+python3 backend/aiml/training_pipeline.py --city Hyderabad --days 730
+```
+
+The generated registry powers the Models page and `/api/model-registry`.
+
 ## Docker
 
 ```bash
@@ -273,5 +289,6 @@ The app uses Open-Meteo services:
 
 - Geocoding API for place search
 - Forecast API for current and daily weather data
+- Historical Weather API for offline model benchmark training
 
 The Python layer computes model traces, confidence, feature importance, and pipeline metadata from the live forecast response.

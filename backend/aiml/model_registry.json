@@ -1,0 +1,65 @@
+{
+  "generated_at": "2026-05-15",
+  "source": "Open-Meteo Historical Weather API",
+  "source_url": "https://archive-api.open-meteo.com/v1/archive",
+  "city": "Hyderabad",
+  "region": "Telangana, India",
+  "target": "next_day_temperature_2m_max_celsius",
+  "date_range": {
+    "start": "2024-05-08",
+    "end": "2026-05-08"
+  },
+  "rows": 730,
+  "train_rows": 584,
+  "test_rows": 146,
+  "features": [
+    "previous_mean_temp",
+    "previous_max_temp",
+    "previous_min_temp",
+    "previous_precipitation",
+    "previous_wind_speed",
+    "previous_wind_gust",
+    "day_of_year_sin",
+    "day_of_year_cos"
+  ],
+  "feature_weights": {
+    "previous_mean_temp": 1.0179,
+    "previous_max_temp": 0.2088,
+    "previous_min_temp": -0.3386,
+    "previous_precipitation": 0.0131,
+    "previous_wind_speed": 0.0381,
+    "previous_wind_gust": -0.0367,
+    "day_of_year_sin": 0.5887,
+    "day_of_year_cos": 0.0464
+  },
+  "models": [
+    {
+      "model": "Persistence",
+      "mae": 0.73,
+      "rmse": 1.0,
+      "r2": 0.94,
+      "score": 95.6
+    },
+    {
+      "model": "Ridge Regression",
+      "mae": 0.76,
+      "rmse": 0.98,
+      "r2": 0.943,
+      "score": 95.4
+    },
+    {
+      "model": "Hybrid Ensemble",
+      "mae": 0.79,
+      "rmse": 1.0,
+      "r2": 0.94,
+      "score": 95.3
+    },
+    {
+      "model": "Seasonal Baseline",
+      "mae": 1.93,
+      "rmse": 2.38,
+      "r2": 0.659,
+      "score": 88.4
+    }
+  ]
+}

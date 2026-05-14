@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from datetime import date
+from pathlib import Path
 from time import perf_counter, time
 from typing import Any
 from urllib.parse import urlencode
@@ -12,6 +13,7 @@ GEOCODE_URL = "https://geocoding-api.open-meteo.com/v1/search"
 FORECAST_URL = "https://api.open-meteo.com/v1/forecast"
 CACHE_TTL_SECONDS = 600
 _CACHE: dict[str, tuple[float, dict[str, Any]]] = {}
+MODEL_REGISTRY_PATH = Path(__file__).with_name("model_registry.json")
 
 
 WEATHER_CODES = {
@@ -36,6 +38,13 @@ WEATHER_CODES = {
     95: "Thunderstorm",
 }
 
+DEFAULT_MODEL_SCORES = [
+    {"model": "Decision Tree", "accuracy": 84, "mae": 2.8},
+    {"model": "KNN", "accuracy": 78, "mae": 3.4},
+    {"model": "Logistic Regression", "accuracy": 73, "mae": 3.9},
+    {"model": "Gradient Boosting", "accuracy": 89, "mae": 2.1},
+]
+
 
 def _get_json(url: str, params: dict[str, Any], timeout: int = 8) -> dict[str, Any]:
     query = urlencode(params, doseq=True)
@@ -49,6 +58,15 @@ def _get_json(url: str, params: dict[str, Any], timeout: int = 8) -> dict[str, A
         payload = json.loads(response.read().decode("utf-8"))
         _CACHE[cache_key] = (now, payload)
         return payload
+
+
+def _load_model_registry() -> dict[str, Any] | None:
+    if not MODEL_REGISTRY_PATH.exists():
+        return None
+    try:
+        return json.loads(MODEL_REGISTRY_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
 
 
 def _condition(code: int | None, rain: int) -> str:
@@ -84,13 +102,6 @@ def _model_trace(day: dict[str, Any]) -> dict[str, float]:
 
 
 class WeatherEnsemble:
-    model_scores = [
-        {"model": "Decision Tree", "accuracy": 84, "mae": 2.8},
-        {"model": "KNN", "accuracy": 78, "mae": 3.4},
-        {"model": "Logistic Regression", "accuracy": 73, "mae": 3.9},
-        {"model": "Gradient Boosting", "accuracy": 89, "mae": 2.1},
-    ]
-
     feature_importance = [
         {"feature": "Humidity", "value": 86},
         {"feature": "Pressure", "value": 78},
@@ -138,11 +149,13 @@ class WeatherEnsemble:
             "alerts": alerts,
             "explanation": self._explain(current, forecast, alerts),
             "summary": summary,
-            "models": self.model_scores,
+            "models": self._model_scores(),
+            "modelRegistry": self._model_registry_summary(),
             "features": self.feature_importance,
             "pipeline": [
                 {"step": "Location search", "status": "live", "detail": "Global geocoding resolves place name to latitude and longitude"},
                 {"step": "Weather ingest", "status": "live", "detail": "Forecast data is pulled for the resolved coordinates"},
+                {"step": "Historical training", "status": "ready", "detail": "Offline benchmark registry is trained from Open-Meteo historical archive data"},
                 {"step": "AIML scoring", "status": "running", "detail": "Model traces, confidence, and feature weights are computed in Python"},
                 {"step": "Response API", "status": "ready", "detail": "Dashboard receives structured JSON from /api/predict"},
             ],
@@ -155,6 +168,46 @@ class WeatherEnsemble:
                 "cache_ttl_seconds": CACHE_TTL_SECONDS,
                 "units": "metric_source",
             },
+        }
+
+    def model_registry(self) -> dict[str, Any] | None:
+        return _load_model_registry()
+
+    def _model_scores(self) -> list[dict[str, Any]]:
+        registry = self.model_registry()
+        if not registry:
+            return DEFAULT_MODEL_SCORES
+        return [
+            {
+                "model": item["model"],
+                "accuracy": round(item.get("score", 0)),
+                "mae": item.get("mae", 0),
+                "rmse": item.get("rmse"),
+                "r2": item.get("r2"),
+            }
+            for item in registry.get("models", [])
+        ] or DEFAULT_MODEL_SCORES
+
+    def _model_registry_summary(self) -> dict[str, Any]:
+        registry = self.model_registry()
+        if not registry:
+            return {
+                "available": False,
+                "message": "Run python3 backend/aiml/training_pipeline.py to generate historical model metrics.",
+            }
+        return {
+            "available": True,
+            "generated_at": registry.get("generated_at"),
+            "source": registry.get("source"),
+            "source_url": registry.get("source_url"),
+            "city": registry.get("city"),
+            "region": registry.get("region"),
+            "target": registry.get("target"),
+            "date_range": registry.get("date_range"),
+            "rows": registry.get("rows"),
+            "train_rows": registry.get("train_rows"),
+            "test_rows": registry.get("test_rows"),
+            "features": registry.get("features", []),
         }
 
     def _resolve_location(self, city: str) -> dict[str, Any]:
