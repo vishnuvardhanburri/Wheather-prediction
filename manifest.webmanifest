@@ -1,0 +1,31 @@
+{
+  "name": "Weather Prediction Using Machine Learning",
+  "short_name": "WeatherML",
+  "description": "Live Python AIML weather prediction dashboard with forecasts, alerts, model confidence, and explainability.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#eef6fb",
+  "theme_color": "#07111f",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Forecast",
+      "short_name": "Forecast",
+      "url": "/forecast.html"
+    },
+    {
+      "name": "Compare Cities",
+      "short_name": "Compare",
+      "url": "/compare.html"
+    }
+  ]
+}

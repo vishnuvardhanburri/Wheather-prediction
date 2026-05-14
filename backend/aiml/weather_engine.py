@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from datetime import date
-from time import perf_counter
+from time import perf_counter, time
 from typing import Any
 from urllib.parse import urlencode
 from urllib.request import urlopen
@@ -10,6 +10,8 @@ from urllib.request import urlopen
 
 GEOCODE_URL = "https://geocoding-api.open-meteo.com/v1/search"
 FORECAST_URL = "https://api.open-meteo.com/v1/forecast"
+CACHE_TTL_SECONDS = 600
+_CACHE: dict[str, tuple[float, dict[str, Any]]] = {}
 
 
 WEATHER_CODES = {
@@ -37,8 +39,16 @@ WEATHER_CODES = {
 
 def _get_json(url: str, params: dict[str, Any], timeout: int = 8) -> dict[str, Any]:
     query = urlencode(params, doseq=True)
+    cache_key = f"{url}?{query}"
+    now = time()
+    cached = _CACHE.get(cache_key)
+    if cached and now - cached[0] < CACHE_TTL_SECONDS:
+        return cached[1]
+
     with urlopen(f"{url}?{query}", timeout=timeout) as response:
-        return json.loads(response.read().decode("utf-8"))
+        payload = json.loads(response.read().decode("utf-8"))
+        _CACHE[cache_key] = (now, payload)
+        return payload
 
 
 def _condition(code: int | None, rain: int) -> str:
@@ -142,6 +152,8 @@ class WeatherEnsemble:
                 "health": "Live",
                 "source": "Open-Meteo forecast + Python AIML scoring",
                 "generated_on": date.today().isoformat(),
+                "cache_ttl_seconds": CACHE_TTL_SECONDS,
+                "units": "metric_source",
             },
         }
 

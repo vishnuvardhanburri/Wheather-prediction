@@ -17,11 +17,18 @@ const params = new URLSearchParams(window.location.search);
 const initialCity = params.get("city") || "Hyderabad";
 const input = document.getElementById("cityInput");
 const resultsPanel = document.getElementById("searchResults");
+const unitKey = "weatherml:units";
 let lastPrediction = null;
+let unitMode = localStorage.getItem(unitKey) || "metric";
 
 if (input) input.value = initialCity;
 applyTheme(localStorage.getItem("weatherml:theme") || "dark");
+applyUnits(unitMode);
 installThemeSwitch();
+installUnitSwitch();
+installAboutLink();
+installMobileNav();
+registerServiceWorker();
 
 function setText(id, value) {
   const node = document.getElementById(id);
@@ -52,6 +59,114 @@ function installThemeSwitch() {
     applyTheme(themes[(themes.indexOf(current) + 1) % themes.length]);
   });
   topbar.appendChild(button);
+}
+
+function applyUnits(mode) {
+  unitMode = mode === "imperial" ? "imperial" : "metric";
+  document.documentElement.dataset.units = unitMode;
+  localStorage.setItem(unitKey, unitMode);
+  updateUnitSwitch();
+}
+
+function installUnitSwitch() {
+  const topbar = document.querySelector(".topbar");
+  if (!topbar || document.getElementById("unitSwitch")) return;
+  const button = document.createElement("button");
+  button.id = "unitSwitch";
+  button.className = "unit-switch";
+  button.type = "button";
+  button.addEventListener("click", () => {
+    applyUnits(unitMode === "metric" ? "imperial" : "metric");
+    if (lastPrediction) renderPrediction(lastPrediction);
+  });
+  topbar.appendChild(button);
+  updateUnitSwitch();
+}
+
+function updateUnitSwitch() {
+  const button = document.getElementById("unitSwitch");
+  if (button) button.textContent = unitMode === "metric" ? "Metric" : "Imperial";
+}
+
+function installMobileNav() {
+  if (document.querySelector(".mobile-bottom-nav")) return;
+  const links = [
+    ["Forecast", "forecast.html"],
+    ["Hourly", "hourly.html"],
+    ["Alerts", "alerts.html"],
+    ["Map", "map.html"],
+    ["Saved", "favorites.html"],
+  ];
+  const current = window.location.pathname.split("/").pop() || "index.html";
+  const nav = document.createElement("nav");
+  nav.className = "mobile-bottom-nav";
+  nav.setAttribute("aria-label", "Mobile navigation");
+  nav.innerHTML = links
+    .map(([label, page]) => {
+      const active = current === page || (current === "index.html" && page === "forecast.html") ? " active" : "";
+      const cityAttr = page === "favorites.html" ? "" : ` data-city-link="${page}"`;
+      return `<a class="mobile-nav-item${active}"${cityAttr} href="${cityUrl(page, initialCity)}">${label}</a>`;
+    })
+    .join("");
+  document.body.appendChild(nav);
+}
+
+function installAboutLink() {
+  document.querySelectorAll(".nav-actions").forEach((nav) => {
+    if (nav.querySelector('[href="/about.html"]')) return;
+    const link = document.createElement("a");
+    link.href = "/about.html";
+    link.textContent = "About";
+    if (window.location.pathname.endsWith("/about.html")) link.className = "active";
+    nav.appendChild(link);
+  });
+}
+
+function registerServiceWorker() {
+  if (!("serviceWorker" in navigator)) return;
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js").catch(() => {});
+  });
+}
+
+function tempValue(value) {
+  const numeric = Number(value) || 0;
+  return unitMode === "imperial" ? Math.round(numeric * 9 / 5 + 32) : Math.round(numeric);
+}
+
+function formatTemp(value, compact = false) {
+  return `${tempValue(value)}${compact ? "°" : unitMode === "imperial" ? "°F" : "°C"}`;
+}
+
+function formatTempDelta(value) {
+  const numeric = Number(value) || 0;
+  const converted = unitMode === "imperial" ? numeric * 9 / 5 : numeric;
+  return `${converted.toFixed(1)}°${unitMode === "imperial" ? "F" : "C"}`;
+}
+
+function formatWind(value) {
+  const numeric = Number(value) || 0;
+  return unitMode === "imperial" ? `${Math.round(numeric * 0.621371)} mph` : `${Math.round(numeric)} km/h`;
+}
+
+function formatPressure(value) {
+  const numeric = Number(value) || 0;
+  return unitMode === "imperial" ? `${(numeric * 0.0295299830714).toFixed(2)} inHg` : `${Math.round(numeric)} hPa`;
+}
+
+function buildDecisionBrief(data) {
+  const current = data.current;
+  const highAlert = (data.alerts || []).find((alert) => alert.level === "High");
+  const carry = current.rain >= 35 || highAlert ? "Carry an umbrella" : "Umbrella is optional";
+  const wind = current.wind < 15 ? "wind is calm" : "wind is noticeable";
+  const risk = highAlert ? highAlert.title.toLowerCase() : "no major weather risk";
+  return `${data.profile.city}: ${carry}. Current outlook is ${String(current.condition).toLowerCase()} around ${formatTemp(current.temperature)} with ${current.rain}% rain probability; ${wind}. Main signal: ${risk}. Confidence is ${current.confidence}%.`;
+}
+
+function localizeMetricText(text) {
+  return String(text || "")
+    .replace(/(-?\d+(?:\.\d+)?)°C/g, (_, value) => formatTemp(Number(value)))
+    .replace(/(-?\d+(?:\.\d+)?) km\/h/g, (_, value) => formatWind(Number(value)));
 }
 
 function iconClassFor(day) {
@@ -116,12 +231,12 @@ function renderPrediction(data) {
   setText("condition", profile.condition);
   const weatherIcon = document.getElementById("weatherIcon");
   if (weatherIcon) weatherIcon.className = `weather-icon ${iconClassFor(current)}`;
-  setText("temp", `${current.temperature}°C`);
+  setText("temp", formatTemp(current.temperature));
   setText("rain", `${current.rain}%`);
   setText("humidity", `${current.humidity}%`);
-  setText("wind", `${current.wind} km/h`);
+  setText("wind", formatWind(current.wind));
   setText("confidence", `${current.confidence}%`);
-  setText("decisionBrief", data.summary || "");
+  setText("decisionBrief", buildDecisionBrief(data));
   setWidth("confidenceBar", `${current.confidence}%`);
 
   renderForecast(forecast);
@@ -149,7 +264,7 @@ function renderForecast(forecast) {
         const rainHeight = Math.max(10, day.rain);
         return `
           <div class="chart-col">
-            <div class="chart-value">${day.temperatureMax}°</div>
+            <div class="chart-value">${formatTemp(day.temperatureMax, true)}</div>
             <div class="chart-bar" style="height:${tempHeight}%"></div>
             <div class="chart-rain" style="height:${rainHeight}%"></div>
             <span class="chart-label">${day.day === "Today" ? "Today" : day.date.slice(5)}</span>
@@ -166,8 +281,8 @@ function renderForecast(forecast) {
         (day) => `
           <article class="forecast-day">
             <header><span>${day.day === "Today" ? "Today" : day.date}</span><span>${day.condition}</span></header>
-            <strong>${day.temperatureMax}° / ${day.temperatureMin}°</strong>
-            <p>${day.rain}% rain · ${day.confidence}% confidence · ${day.pressure} hPa</p>
+            <strong>${formatTemp(day.temperatureMax, true)} / ${formatTemp(day.temperatureMin, true)}</strong>
+            <p>${day.rain}% rain · ${day.confidence}% confidence · ${formatPressure(day.pressure)}</p>
           </article>
         `,
       )
@@ -182,7 +297,7 @@ function renderModels(models) {
     .map(
       (item) => `
         <div class="score-row">
-          <header><strong>${item.model}</strong><span>MAE ${item.mae}°C</span></header>
+          <header><strong>${item.model}</strong><span>MAE ${formatTempDelta(item.mae)}</span></header>
           <div class="bar"><i style="width:${item.accuracy}%"></i></div>
         </div>
       `,
@@ -213,7 +328,7 @@ function renderTrace(trace) {
       ([name, value]) => `
         <div class="trace-card">
           <span>${name}</span>
-          <strong>${value}°C</strong>
+          <strong>${formatTemp(value)}</strong>
         </div>
       `,
     )
@@ -229,8 +344,8 @@ function renderHourly(hourly) {
         <article class="hour-card">
           <strong>${hour.hour}</strong>
           <span>${hour.condition}</span>
-          <div>${hour.temperature}°C</div>
-          <p>${hour.rain}% rain · ${hour.wind} km/h · ${hour.humidity}% RH</p>
+          <div>${formatTemp(hour.temperature)}</div>
+          <p>${hour.rain}% rain · ${formatWind(hour.wind)} · ${hour.humidity}% RH</p>
         </article>
       `,
     )
@@ -248,8 +363,8 @@ function renderTimeline(hourly) {
         <article class="timeline-card timeline-${sky}" style="--delay:${index}">
           <strong>${hour.hour}</strong>
           <span>${hour.condition}</span>
-          <div>${hour.temperature}°C</div>
-          <p>${hour.rain}% rain · ${hour.gust} km/h gusts</p>
+          <div>${formatTemp(hour.temperature)}</div>
+          <p>${hour.rain}% rain · ${formatWind(hour.gust)} gusts</p>
         </article>
       `;
     })
@@ -265,7 +380,7 @@ function renderAlerts(alerts) {
         <article class="alert-card alert-${alert.level.toLowerCase()}">
           <span>${alert.level}</span>
           <h3>${alert.title}</h3>
-          <p>${alert.detail}</p>
+          <p>${localizeMetricText(alert.detail)}</p>
         </article>
       `,
     )
@@ -280,7 +395,7 @@ function renderExplanation(items) {
       (item) => `
         <article class="explain-card">
           <span>${item.signal}</span>
-          <strong>${item.value}</strong>
+          <strong>${localizeMetricText(item.value)}</strong>
           <p>${item.impact}</p>
         </article>
       `,
@@ -299,7 +414,7 @@ function renderMap(profile, current) {
     const lat = Number(profile.latitude);
     marker.style.left = `${Math.max(8, Math.min(92, ((lon + 180) / 360) * 100))}%`;
     marker.style.top = `${Math.max(8, Math.min(92, ((90 - lat) / 180) * 100))}%`;
-    marker.querySelector("span").textContent = `${current.temperature}°`;
+    marker.querySelector("span").textContent = formatTemp(current.temperature, true);
   }
 }
 
@@ -368,7 +483,7 @@ function downloadJson() {
 }
 
 function speakBrief() {
-  const text = lastPrediction?.summary;
+  const text = lastPrediction ? buildDecisionBrief(lastPrediction) : "";
   if (!text || !("speechSynthesis" in window)) return;
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
@@ -376,7 +491,8 @@ function speakBrief() {
 
 function shareCard() {
   if (!lastPrediction) return;
-  const { profile, current, summary } = lastPrediction;
+  const { profile, current } = lastPrediction;
+  const summary = buildDecisionBrief(lastPrediction);
   const canvas = document.createElement("canvas");
   canvas.width = 1200;
   canvas.height = 630;
@@ -396,7 +512,7 @@ function shareCard() {
   ctx.fillText(profile.region, 70, 168);
   ctx.font = "900 128px system-ui";
   ctx.fillStyle = "#ffffff";
-  ctx.fillText(`${current.temperature}°C`, 70, 330);
+  ctx.fillText(formatTemp(current.temperature), 70, 330);
   ctx.font = "700 36px system-ui";
   ctx.fillText(current.condition, 70, 390);
   ctx.font = "600 28px system-ui";
@@ -462,11 +578,11 @@ function compareCard(data) {
     <article class="current-card compare-card">
       <p class="muted">${data.profile.region}</p>
       <h2>${data.profile.city}</h2>
-      <p class="condition">${data.summary}</p>
+      <p class="condition">${buildDecisionBrief(data)}</p>
       <div class="metric-grid">
-        <div class="metric"><span>Temp</span><strong>${c.temperature}°C</strong></div>
+        <div class="metric"><span>Temp</span><strong>${formatTemp(c.temperature)}</strong></div>
         <div class="metric"><span>Rain</span><strong>${c.rain}%</strong></div>
-        <div class="metric"><span>Wind</span><strong>${c.wind} km/h</strong></div>
+        <div class="metric"><span>Wind</span><strong>${formatWind(c.wind)}</strong></div>
         <div class="metric"><span>Confidence</span><strong>${c.confidence}%</strong></div>
       </div>
       <a class="action-link primary" href="${cityUrl("forecast.html", data.profile.city)}">Open forecast</a>
@@ -553,12 +669,24 @@ document.addEventListener("click", (event) => {
 });
 
 refreshPageLinks(initialCity);
+const autoPredictionPages = [
+  "/forecast.html",
+  "/hourly.html",
+  "/alerts.html",
+  "/map.html",
+  "/explanation.html",
+  "/report.html",
+  "/models.html",
+  "/pipeline.html",
+  "/timeline.html",
+];
+
 if (window.location.pathname.endsWith("/compare.html")) {
   renderComparePage();
 } else if (window.location.pathname.endsWith("/favorites.html")) {
   renderFavoritesDashboard();
-} else if (!window.location.pathname.endsWith("/index.html") && window.location.pathname !== "/") {
+} else if (autoPredictionPages.some((page) => window.location.pathname.endsWith(page))) {
   submit(initialCity);
-} else {
+} else if (window.location.pathname === "/" || window.location.pathname.endsWith("/index.html")) {
   predict(initialCity).then(renderPrediction).catch(() => {});
 }

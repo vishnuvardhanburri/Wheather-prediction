@@ -6,6 +6,12 @@ Base URL for local development:
 http://127.0.0.1:4173
 ```
 
+Live base URL:
+
+```text
+https://wheather-prediction.onrender.com
+```
+
 ## Search Places
 
 ```http
@@ -48,7 +54,7 @@ Key response sections:
 - `models`: model leaderboard.
 - `features`: feature importance.
 - `pipeline`: backend flow status.
-- `meta`: engine, latency, health, source.
+- `meta`: engine, latency, health, source, cache TTL, and source unit system.
 
 ## Error Shape
 

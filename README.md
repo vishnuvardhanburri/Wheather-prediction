@@ -4,6 +4,8 @@ WeatherML is a standalone Python AIML weather prediction web app. It lets a user
 
 Developed by Vishnu Vardhan Burri. All rights reserved.
 
+Live demo: [https://wheather-prediction.onrender.com/](https://wheather-prediction.onrender.com/)
+
 ![Home screen](docs/images/home.png)
 
 ## Real-Time Test
@@ -28,6 +30,7 @@ Most beginner weather prediction projects stop at a notebook or a basic form. Th
 - Python AIML scoring layer instead of frontend-only calculations
 - separate pages for forecast, models, and pipeline
 - explainability output so users can see why the prediction looks the way it does
+- mobile-first navigation, installable PWA support, and Docker-ready deployment
 
 ## Features
 
@@ -44,6 +47,10 @@ Most beginner weather prediction projects stop at a notebook or a basic form. Th
 - Shareable PNG forecast card
 - Browser voice briefing
 - Dark, light, and satellite theme switch
+- Metric/imperial unit switch for temperature, wind, pressure, charts, cards, and voice/share outputs
+- Installable PWA shell with service worker caching for repeat visits
+- Mobile bottom navigation for Forecast, Hourly, Alerts, Map, and Saved pages
+- Python-side API response caching for repeated live forecast/geocoding calls
 - Favorites and recent city shortcuts in browser storage
 - Current weather card with temperature, rain chance, humidity, wind, confidence, latency, and health
 - Forecast chart and day cards
@@ -75,6 +82,10 @@ Most beginner weather prediction projects stop at a notebook or a basic form. Th
 | Favorites | Report |
 | --- | --- |
 | ![Favorites page](docs/images/favorites.png) | ![Report page](docs/images/report.png) |
+
+| Mobile Forecast | About / Live Demo |
+| --- | --- |
+| ![Mobile forecast page](docs/images/mobile-forecast.png) | ![About page](docs/images/about.png) |
 
 | Pipeline |
 | --- | --- |
@@ -114,6 +125,7 @@ weather-prediction-ml/
   compare.html                     # City-to-city comparison
   timeline.html                    # Cinematic hourly timeline
   favorites.html                   # Saved places dashboard
+  about.html                       # Live demo and project details
   report.html                      # Printable/downloadable report
   models.html                      # Models and explainability page
   pipeline.html                    # Pipeline status page
@@ -141,6 +153,12 @@ Open:
 http://127.0.0.1:4173
 ```
 
+Live:
+
+```text
+https://wheather-prediction.onrender.com/
+```
+
 ## Where To Run
 
 You can run it:
@@ -156,6 +174,12 @@ Deployment notes: [docs/deployment.md](docs/deployment.md)
 ## Make It Live
 
 ### Option 1: Render
+
+Live project URL:
+
+```text
+https://wheather-prediction.onrender.com/
+```
 
 1. Push this repo to GitHub.
 2. Open Render and create a new Web Service from the GitHub repo.

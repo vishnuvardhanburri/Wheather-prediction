@@ -2,6 +2,12 @@
 
 This project runs anywhere Python 3 is available because it uses only the standard library.
 
+Live demo:
+
+```text
+https://wheather-prediction.onrender.com/
+```
+
 ## Local
 
 ```bash
@@ -37,6 +43,12 @@ For a real deployment, put the Python API behind:
 ## Render
 
 Render web services must bind to `0.0.0.0` and use the `PORT` environment variable. This app already supports that.
+
+Current live Render URL:
+
+```text
+https://wheather-prediction.onrender.com/
+```
 
 Settings:
 
