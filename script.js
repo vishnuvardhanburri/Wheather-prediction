@@ -20,6 +20,8 @@ const resultsPanel = document.getElementById("searchResults");
 let lastPrediction = null;
 
 if (input) input.value = initialCity;
+applyTheme(localStorage.getItem("weatherml:theme") || "dark");
+installThemeSwitch();
 
 function setText(id, value) {
   const node = document.getElementById(id);
@@ -29,6 +31,27 @@ function setText(id, value) {
 function setWidth(id, value) {
   const node = document.getElementById(id);
   if (node) node.style.width = value;
+}
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  localStorage.setItem("weatherml:theme", theme);
+}
+
+function installThemeSwitch() {
+  const topbar = document.querySelector(".topbar");
+  if (!topbar || document.getElementById("themeSwitch")) return;
+  const button = document.createElement("button");
+  button.id = "themeSwitch";
+  button.className = "theme-switch";
+  button.type = "button";
+  button.textContent = "Theme";
+  button.addEventListener("click", () => {
+    const themes = ["dark", "light", "satellite"];
+    const current = document.documentElement.dataset.theme || "dark";
+    applyTheme(themes[(themes.indexOf(current) + 1) % themes.length]);
+  });
+  topbar.appendChild(button);
 }
 
 function iconClassFor(day) {
@@ -98,6 +121,7 @@ function renderPrediction(data) {
   setText("humidity", `${current.humidity}%`);
   setText("wind", `${current.wind} km/h`);
   setText("confidence", `${current.confidence}%`);
+  setText("decisionBrief", data.summary || "");
   setWidth("confidenceBar", `${current.confidence}%`);
 
   renderForecast(forecast);
@@ -111,6 +135,7 @@ function renderPrediction(data) {
   renderExplanation(data.explanation || []);
   renderMap(profile, current);
   renderFavorites();
+  renderTimeline(data.hourly || []);
   refreshPageLinks(profile.city);
 }
 
@@ -209,6 +234,25 @@ function renderHourly(hourly) {
         </article>
       `,
     )
+    .join("");
+}
+
+function renderTimeline(hourly) {
+  const node = document.getElementById("timelineTrack");
+  if (!node) return;
+  node.innerHTML = hourly
+    .slice(0, 12)
+    .map((hour, index) => {
+      const sky = hour.rain > 55 ? "rain" : hour.weatherCode === 0 ? "clear" : "cloud";
+      return `
+        <article class="timeline-card timeline-${sky}" style="--delay:${index}">
+          <strong>${hour.hour}</strong>
+          <span>${hour.condition}</span>
+          <div>${hour.temperature}°C</div>
+          <p>${hour.rain}% rain · ${hour.gust} km/h gusts</p>
+        </article>
+      `;
+    })
     .join("");
 }
 
@@ -323,6 +367,66 @@ function downloadJson() {
   URL.revokeObjectURL(url);
 }
 
+function speakBrief() {
+  const text = lastPrediction?.summary;
+  if (!text || !("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+}
+
+function shareCard() {
+  if (!lastPrediction) return;
+  const { profile, current, summary } = lastPrediction;
+  const canvas = document.createElement("canvas");
+  canvas.width = 1200;
+  canvas.height = 630;
+  const ctx = canvas.getContext("2d");
+  const gradient = ctx.createLinearGradient(0, 0, 1200, 630);
+  gradient.addColorStop(0, "#07111f");
+  gradient.addColorStop(1, "#0e7490");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, 1200, 630);
+  ctx.fillStyle = "rgba(255,255,255,.1)";
+  for (let i = 0; i < 9; i++) ctx.fillRect(90 + i * 120, 80, 1, 470);
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "800 62px system-ui";
+  ctx.fillText(profile.city, 70, 120);
+  ctx.font = "500 30px system-ui";
+  ctx.fillStyle = "#bae6fd";
+  ctx.fillText(profile.region, 70, 168);
+  ctx.font = "900 128px system-ui";
+  ctx.fillStyle = "#ffffff";
+  ctx.fillText(`${current.temperature}°C`, 70, 330);
+  ctx.font = "700 36px system-ui";
+  ctx.fillText(current.condition, 70, 390);
+  ctx.font = "600 28px system-ui";
+  ctx.fillStyle = "#dff7ff";
+  wrapCanvasText(ctx, summary, 70, 470, 980, 36);
+  ctx.font = "700 24px system-ui";
+  ctx.fillStyle = "#9ff6c8";
+  ctx.fillText("Developed by Vishnu Vardhan Burri · WeatherML", 70, 575);
+  const link = document.createElement("a");
+  link.download = `${profile.city.toLowerCase().replaceAll(" ", "-")}-weather-card.png`;
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+}
+
+function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
+  const words = String(text || "").split(" ");
+  let line = "";
+  for (const word of words) {
+    const next = `${line}${word} `;
+    if (ctx.measureText(next).width > maxWidth && line) {
+      ctx.fillText(line, x, y);
+      line = `${word} `;
+      y += lineHeight;
+    } else {
+      line = next;
+    }
+  }
+  ctx.fillText(line, x, y);
+}
+
 function targetPageForSubmit() {
   const path = window.location.pathname;
   if (path.endsWith("/models.html")) return "models.html";
@@ -332,7 +436,54 @@ function targetPageForSubmit() {
   if (path.endsWith("/map.html")) return "map.html";
   if (path.endsWith("/explanation.html")) return "explanation.html";
   if (path.endsWith("/report.html")) return "report.html";
+  if (path.endsWith("/timeline.html")) return "timeline.html";
+  if (path.endsWith("/favorites.html")) return "favorites.html";
+  if (path.endsWith("/compare.html")) return "compare.html";
   return "forecast.html";
+}
+
+async function renderComparePage() {
+  const grid = document.getElementById("compareGrid");
+  if (!grid) return;
+  const a = document.getElementById("compareA").value || "Hyderabad";
+  const b = document.getElementById("compareB").value || "Visakhapatnam";
+  document.body.classList.add("is-loading");
+  try {
+    const [left, right] = await Promise.all([predict(a), predict(b)]);
+    grid.innerHTML = [left, right].map(compareCard).join("");
+  } finally {
+    document.body.classList.remove("is-loading");
+  }
+}
+
+function compareCard(data) {
+  const c = data.current;
+  return `
+    <article class="current-card compare-card">
+      <p class="muted">${data.profile.region}</p>
+      <h2>${data.profile.city}</h2>
+      <p class="condition">${data.summary}</p>
+      <div class="metric-grid">
+        <div class="metric"><span>Temp</span><strong>${c.temperature}°C</strong></div>
+        <div class="metric"><span>Rain</span><strong>${c.rain}%</strong></div>
+        <div class="metric"><span>Wind</span><strong>${c.wind} km/h</strong></div>
+        <div class="metric"><span>Confidence</span><strong>${c.confidence}%</strong></div>
+      </div>
+      <a class="action-link primary" href="${cityUrl("forecast.html", data.profile.city)}">Open forecast</a>
+    </article>
+  `;
+}
+
+async function renderFavoritesDashboard() {
+  const node = document.getElementById("favoritesDashboard");
+  if (!node) return;
+  const favorites = getFavorites();
+  if (!favorites.length) {
+    node.innerHTML = `<article class="panel"><h2>No favorites yet</h2><p class="muted">Open a forecast and save a place to build this dashboard.</p></article>`;
+    return;
+  }
+  const rows = await Promise.all(favorites.map((city) => predict(city).catch(() => null)));
+  node.innerHTML = rows.filter(Boolean).map(compareCard).join("");
 }
 
 async function submit(city) {
@@ -342,6 +493,10 @@ async function submit(city) {
     const data = await predict(clean);
     renderPrediction(data);
     const target = targetPageForSubmit();
+    if (target === "favorites.html") {
+      saveFavorite();
+      renderFavoritesDashboard();
+    }
     if (window.location.pathname === "/" || window.location.pathname.endsWith("/index.html")) {
       window.location.href = cityUrl(target, data.profile.city);
     } else {
@@ -369,6 +524,12 @@ document.getElementById("searchForm")?.addEventListener("submit", (event) => {
 document.getElementById("saveFavorite")?.addEventListener("click", saveFavorite);
 document.getElementById("downloadJson")?.addEventListener("click", downloadJson);
 document.getElementById("printReport")?.addEventListener("click", () => window.print());
+document.getElementById("speakBrief")?.addEventListener("click", speakBrief);
+document.getElementById("shareCard")?.addEventListener("click", shareCard);
+document.getElementById("compareForm")?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  renderComparePage();
+});
 
 let searchTimer;
 input?.addEventListener("input", () => {
@@ -392,7 +553,11 @@ document.addEventListener("click", (event) => {
 });
 
 refreshPageLinks(initialCity);
-if (!window.location.pathname.endsWith("/index.html") && window.location.pathname !== "/") {
+if (window.location.pathname.endsWith("/compare.html")) {
+  renderComparePage();
+} else if (window.location.pathname.endsWith("/favorites.html")) {
+  renderFavoritesDashboard();
+} else if (!window.location.pathname.endsWith("/index.html") && window.location.pathname !== "/") {
   submit(initialCity);
 } else {
   predict(initialCity).then(renderPrediction).catch(() => {});

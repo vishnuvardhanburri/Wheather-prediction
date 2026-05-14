@@ -109,6 +109,7 @@ class WeatherEnsemble:
         hourly = self._shape_hourly(raw)
         current = forecast[0]
         alerts = self._build_alerts(current, forecast, hourly)
+        summary = self._brief(location, current, alerts)
         elapsed_ms = max(18, round((perf_counter() - started) * 1000))
 
         return {
@@ -126,6 +127,7 @@ class WeatherEnsemble:
             "hourly": hourly,
             "alerts": alerts,
             "explanation": self._explain(current, forecast, alerts),
+            "summary": summary,
             "models": self.model_scores,
             "features": self.feature_importance,
             "pipeline": [
@@ -278,6 +280,18 @@ class WeatherEnsemble:
             {"signal": "Wind and gust pressure", "value": f"{wind_peak} km/h", "impact": "Stronger wind or gusts increase operational risk and reduce confidence."},
             {"signal": "Alert load", "value": str(len(alerts)), "impact": "More triggered alert rules indicate a less stable forecast window."},
         ]
+
+    @staticmethod
+    def _brief(location: dict[str, Any], current: dict[str, Any], alerts: list[dict[str, str]]) -> str:
+        high_alert = next((alert for alert in alerts if alert["level"] == "High"), None)
+        carry = "Carry an umbrella" if current["rain"] >= 35 or high_alert else "Umbrella is optional"
+        wind = "wind is calm" if current["wind"] < 15 else "wind is noticeable"
+        risk = high_alert["title"].lower() if high_alert else "no major weather risk"
+        return (
+            f"{location['name']}: {carry}. Current outlook is {current['condition'].lower()} "
+            f"around {current['temperature']}°C with {current['rain']}% rain probability; {wind}. "
+            f"Main signal: {risk}. Confidence is {current['confidence']}%."
+        )
 
     @staticmethod
     def _location_summary(item: dict[str, Any]) -> dict[str, Any]:

@@ -38,7 +38,12 @@ Most beginner weather prediction projects stop at a notebook or a basic form. Th
 - Weather risk alerts for storms, heavy rain, wind, and heat
 - Location map page with OpenStreetMap handoff
 - Explanation page showing why confidence/risk changes
+- Compare two cities side by side
+- Cinematic weather timeline mode
 - Printable report page and JSON export
+- Shareable PNG forecast card
+- Browser voice briefing
+- Dark, light, and satellite theme switch
 - Favorites and recent city shortcuts in browser storage
 - Current weather card with temperature, rain chance, humidity, wind, confidence, latency, and health
 - Forecast chart and day cards
@@ -63,9 +68,17 @@ Most beginner weather prediction projects stop at a notebook or a basic form. Th
 | --- | --- |
 | ![Map page](docs/images/map.png) | ![Explanation page](docs/images/explanation.png) |
 
-| Report | Pipeline |
+| Compare | Timeline |
 | --- | --- |
-| ![Report page](docs/images/report.png) | ![Pipeline page](docs/images/pipeline.png) |
+| ![Compare page](docs/images/compare.png) | ![Timeline page](docs/images/timeline.png) |
+
+| Favorites | Report |
+| --- | --- |
+| ![Favorites page](docs/images/favorites.png) | ![Report page](docs/images/report.png) |
+
+| Pipeline |
+| --- | --- |
+| ![Pipeline page](docs/images/pipeline.png) |
 
 | Architecture |
 | --- | --- |
@@ -98,6 +111,9 @@ weather-prediction-ml/
   alerts.html                      # Weather risk alerts
   map.html                         # Location map and coordinates
   explanation.html                 # Model explanation page
+  compare.html                     # City-to-city comparison
+  timeline.html                    # Cinematic hourly timeline
+  favorites.html                   # Saved places dashboard
   report.html                      # Printable/downloadable report
   models.html                      # Models and explainability page
   pipeline.html                    # Pipeline status page
@@ -106,6 +122,7 @@ weather-prediction-ml/
   docs/                            # Architecture, API docs, screenshots
   tests/smoke_test.py              # Basic backend smoke test
   Dockerfile                       # Container deployment
+  .dockerignore                    # Docker build hygiene
   .github/workflows/smoke-test.yml # GitHub Actions smoke test
 ```
 

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Compare Cities | Weather Prediction Using Machine Learning</title>
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app subpage">
+      <nav class="topbar page-topbar" aria-label="Application navigation">
+        <a class="brand" href="/"><span class="brand-mark">W</span><span><strong>WeatherML</strong><small>Python AIML System</small></span></a>
+        <div class="nav-actions"><a data-city-link="forecast.html" href="/forecast.html">Forecast</a><a class="active" href="/compare.html">Compare</a><a data-city-link="favorites.html" href="/favorites.html">Favorites</a><a data-city-link="timeline.html" href="/timeline.html">Timeline</a></div>
+      </nav>
+      <section class="page-shell">
+        <div class="page-head">
+          <div><p class="eyebrow">Comparison workspace</p><h1>Compare two cities side by side</h1><p class="lede">Run two live forecasts and compare rain, heat, wind, confidence, and alerts.</p></div>
+          <form class="compare-search" id="compareForm">
+            <label>City A<input id="compareA" value="Hyderabad" autocomplete="off" /></label>
+            <label>City B<input id="compareB" value="Visakhapatnam" autocomplete="off" /></label>
+            <button type="submit">Compare</button>
+          </form>
+        </div>
+        <section class="compare-grid" id="compareGrid"></section>
+      </section>
+      <footer class="app-footer"><p>Developed by Vishnu Vardhan Burri. All rights reserved.</p></footer>
+    </main>
+    <script src="./script.js"></script>
+  </body>
+</html>

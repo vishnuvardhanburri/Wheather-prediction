@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Favorites | Weather Prediction Using Machine Learning</title>
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app subpage">
+      <nav class="topbar page-topbar" aria-label="Application navigation">
+        <a class="brand" href="/"><span class="brand-mark">W</span><span><strong>WeatherML</strong><small>Python AIML System</small></span></a>
+        <div class="nav-actions"><a data-city-link="forecast.html" href="/forecast.html">Forecast</a><a href="/compare.html">Compare</a><a class="active" href="/favorites.html">Favorites</a><a data-city-link="timeline.html" href="/timeline.html">Timeline</a></div>
+      </nav>
+      <section class="page-shell">
+        <div class="page-head">
+          <div><p class="eyebrow">Saved dashboard</p><h1>Favorite places</h1><p class="lede">Quick current conditions for saved places from browser storage.</p></div>
+          <form class="search-panel compact-search" id="searchForm"><label for="cityInput">Add place</label><div class="search-row"><input id="cityInput" autocomplete="off" placeholder="Search any place" /><button type="submit">Add</button></div><div class="search-results" id="searchResults" hidden></div></form>
+        </div>
+        <section class="favorites-dashboard" id="favoritesDashboard"></section>
+      </section>
+      <footer class="app-footer"><p>Developed by Vishnu Vardhan Burri. All rights reserved.</p></footer>
+    </main>
+    <script src="./script.js"></script>
+  </body>
+</html>
