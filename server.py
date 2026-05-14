@@ -10,12 +10,13 @@ from backend.aiml.weather_engine import WeatherEnsemble
 
 
 ROOT = Path(__file__).resolve().parent
+FRONTEND_DIR = ROOT / "frontend"
 ENGINE = WeatherEnsemble()
 
 
 class WeatherRequestHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory=str(ROOT), **kwargs)
+        super().__init__(*args, directory=str(FRONTEND_DIR), **kwargs)
 
     def do_GET(self):  # noqa: N802 - stdlib handler API
         parsed = urlparse(self.path)

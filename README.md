@@ -6,7 +6,7 @@ Developed by Vishnu Vardhan Burri. All rights reserved.
 
 Live demo: [https://wheather-prediction.onrender.com/](https://wheather-prediction.onrender.com/)
 
-![Home screen](docs/images/home.png)
+![Home screen](media/home.png)
 
 ## Real-Time Test
 
@@ -19,7 +19,7 @@ curl "http://127.0.0.1:4173/api/predict?city=Visakhapatnam"
 
 Live forecast UI:
 
-![Real-time forecast test](docs/images/forecast.png)
+![Real-time forecast test](media/forecast.png)
 
 ## Why We Built This
 
@@ -65,35 +65,35 @@ Most beginner weather prediction projects stop at a notebook or a basic form. Th
 
 | Forecast | Models |
 | --- | --- |
-| ![Forecast page](docs/images/forecast.png) | ![Models page](docs/images/models.png) |
+| ![Forecast page](media/forecast.png) | ![Models page](media/models.png) |
 
 | Hourly | Alerts |
 | --- | --- |
-| ![Hourly page](docs/images/hourly.png) | ![Alerts page](docs/images/alerts.png) |
+| ![Hourly page](media/hourly.png) | ![Alerts page](media/alerts.png) |
 
 | Map | Explanation |
 | --- | --- |
-| ![Map page](docs/images/map.png) | ![Explanation page](docs/images/explanation.png) |
+| ![Map page](media/map.png) | ![Explanation page](media/explanation.png) |
 
 | Compare | Timeline |
 | --- | --- |
-| ![Compare page](docs/images/compare.png) | ![Timeline page](docs/images/timeline.png) |
+| ![Compare page](media/compare.png) | ![Timeline page](media/timeline.png) |
 
 | Favorites | Report |
 | --- | --- |
-| ![Favorites page](docs/images/favorites.png) | ![Report page](docs/images/report.png) |
+| ![Favorites page](media/favorites.png) | ![Report page](media/report.png) |
 
 | Mobile Forecast | About / Live Demo |
 | --- | --- |
-| ![Mobile forecast page](docs/images/mobile-forecast.png) | ![About page](docs/images/about.png) |
+| ![Mobile forecast page](media/mobile-forecast.png) | ![About page](media/about.png) |
 
 | Pipeline |
 | --- | --- |
-| ![Pipeline page](docs/images/pipeline.png) |
+| ![Pipeline page](media/pipeline.png) |
 
 | Architecture |
 | --- | --- |
-| ![Architecture](docs/images/architecture.svg) |
+| ![Architecture](media/architecture.svg) |
 
 ## Architecture
 
@@ -114,24 +114,28 @@ Full architecture notes: [docs/architecture.md](docs/architecture.md)
 
 ```text
 weather-prediction-ml/
+  frontend/                        # Static browser app served at /
+    index.html                     # Home/search page
+    forecast.html                  # Forecast dashboard
+    hourly.html                    # 24-hour forecast view
+    alerts.html                    # Weather risk alerts
+    map.html                       # Location map and coordinates
+    explanation.html               # Model explanation page
+    compare.html                   # City-to-city comparison
+    timeline.html                  # Cinematic hourly timeline
+    favorites.html                 # Saved places dashboard
+    about.html                     # Live demo and project details
+    report.html                    # Printable/downloadable report
+    models.html                    # Models and explainability page
+    pipeline.html                  # Pipeline status page
+    script.js                      # Frontend API calls and rendering
+    styles.css                     # UI styling
+    manifest.webmanifest           # PWA install metadata
+    service-worker.js              # Offline shell cache
   backend/aiml/weather_engine.py   # Geocoding, forecast ingest, AIML scoring
   server.py                        # Python HTTP server and API routes
-  index.html                       # Home/search page
-  forecast.html                    # Forecast dashboard
-  hourly.html                      # 24-hour forecast view
-  alerts.html                      # Weather risk alerts
-  map.html                         # Location map and coordinates
-  explanation.html                 # Model explanation page
-  compare.html                     # City-to-city comparison
-  timeline.html                    # Cinematic hourly timeline
-  favorites.html                   # Saved places dashboard
-  about.html                       # Live demo and project details
-  report.html                      # Printable/downloadable report
-  models.html                      # Models and explainability page
-  pipeline.html                    # Pipeline status page
-  script.js                        # Frontend API calls and rendering
-  styles.css                       # UI styling
-  docs/                            # Architecture, API docs, screenshots
+  media/                           # README screenshots and architecture image
+  docs/                            # Architecture, API, and deployment notes
   tests/smoke_test.py              # Basic backend smoke test
   Dockerfile                       # Container deployment
   .dockerignore                    # Docker build hygiene

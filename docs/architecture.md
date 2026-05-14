@@ -1,6 +1,6 @@
 # Architecture
 
-WeatherML is a standalone Python AIML weather prediction app. The frontend is static HTML/CSS/JS, while the backend is a Python HTTP server that exposes weather search and prediction APIs.
+WeatherML is a standalone Python AIML weather prediction app. The frontend lives in `frontend/` as static HTML/CSS/JS, while the backend is a Python HTTP server that exposes weather search and prediction APIs and serves the frontend at root URLs.
 
 ## System Diagram
 
@@ -28,15 +28,15 @@ flowchart LR
 
 ## Pages
 
-- `index.html`: landing and search entry.
-- `forecast.html`: forecast dashboard.
-- `hourly.html`: next-24-hour forecast.
-- `alerts.html`: rule-based weather risk view.
-- `map.html`: coordinate and map handoff.
-- `explanation.html`: model explanation signals.
-- `report.html`: printable forecast report and JSON export.
-- `models.html`: model comparison, feature importance, per-model trace.
-- `pipeline.html`: service flow, API/runtime metadata, pipeline status.
+- `frontend/index.html`: landing and search entry.
+- `frontend/forecast.html`: forecast dashboard.
+- `frontend/hourly.html`: next-24-hour forecast.
+- `frontend/alerts.html`: rule-based weather risk view.
+- `frontend/map.html`: coordinate and map handoff.
+- `frontend/explanation.html`: model explanation signals.
+- `frontend/report.html`: printable forecast report and JSON export.
+- `frontend/models.html`: model comparison, feature importance, per-model trace.
+- `frontend/pipeline.html`: service flow, API/runtime metadata, pipeline status.
 
 ## Backend Modules
 
