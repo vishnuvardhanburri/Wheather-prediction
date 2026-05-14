@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760">
+  <rect width="1400" height="760" rx="32" fill="#07111f"/>
+  <defs>
+    <linearGradient id="card" x1="0" x2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#eaf7fb"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#7dd3fc"/>
+    </marker>
+  </defs>
+  <text x="70" y="86" fill="#ffffff" font-size="42" font-family="Inter, Arial" font-weight="800">WeatherML Architecture</text>
+  <text x="70" y="126" fill="#9fb2c7" font-size="20" font-family="Inter, Arial">Live geocoding, forecast ingest, Python AIML scoring, and multi-page dashboard rendering.</text>
+
+  <g font-family="Inter, Arial">
+    <rect x="70" y="210" width="230" height="130" rx="18" fill="url(#card)"/>
+    <text x="100" y="262" fill="#0f172a" font-size="24" font-weight="800">User Search</text>
+    <text x="100" y="298" fill="#64748b" font-size="16">City, district, airport, region</text>
+
+    <rect x="390" y="180" width="260" height="190" rx="18" fill="url(#card)"/>
+    <text x="420" y="232" fill="#0f172a" font-size="24" font-weight="800">Frontend Pages</text>
+    <text x="420" y="270" fill="#64748b" font-size="16">index.html</text>
+    <text x="420" y="300" fill="#64748b" font-size="16">forecast.html</text>
+    <text x="420" y="330" fill="#64748b" font-size="16">models.html / pipeline.html</text>
+
+    <rect x="740" y="160" width="270" height="230" rx="18" fill="url(#card)"/>
+    <text x="770" y="212" fill="#0f172a" font-size="24" font-weight="800">Python API</text>
+    <text x="770" y="250" fill="#64748b" font-size="16">/api/search</text>
+    <text x="770" y="280" fill="#64748b" font-size="16">/api/predict</text>
+    <text x="770" y="310" fill="#64748b" font-size="16">ThreadingHTTPServer</text>
+
+    <rect x="1100" y="120" width="230" height="130" rx="18" fill="#dff7ff"/>
+    <text x="1130" y="172" fill="#0f172a" font-size="23" font-weight="800">Geocoding</text>
+    <text x="1130" y="208" fill="#64748b" font-size="16">Open-Meteo locations</text>
+
+    <rect x="1100" y="310" width="230" height="130" rx="18" fill="#e4fbe9"/>
+    <text x="1130" y="362" fill="#0f172a" font-size="23" font-weight="800">Forecast API</text>
+    <text x="1130" y="398" fill="#64748b" font-size="16">Current + daily data</text>
+
+    <rect x="740" y="500" width="310" height="150" rx="18" fill="#fff7dd"/>
+    <text x="770" y="552" fill="#0f172a" font-size="24" font-weight="800">AIML Scoring</text>
+    <text x="770" y="590" fill="#64748b" font-size="16">Model trace, confidence</text>
+    <text x="770" y="620" fill="#64748b" font-size="16">Feature importance, pipeline status</text>
+
+    <line x1="300" y1="275" x2="385" y2="275" stroke="#7dd3fc" stroke-width="4" marker-end="url(#arrow)"/>
+    <line x1="650" y1="275" x2="735" y2="275" stroke="#7dd3fc" stroke-width="4" marker-end="url(#arrow)"/>
+    <line x1="1010" y1="230" x2="1095" y2="185" stroke="#7dd3fc" stroke-width="4" marker-end="url(#arrow)"/>
+    <line x1="1010" y1="315" x2="1095" y2="375" stroke="#7dd3fc" stroke-width="4" marker-end="url(#arrow)"/>
+    <line x1="875" y1="390" x2="875" y2="495" stroke="#7dd3fc" stroke-width="4" marker-end="url(#arrow)"/>
+    <line x1="740" y1="575" x2="520" y2="375" stroke="#7dd3fc" stroke-width="4" marker-end="url(#arrow)"/>
+  </g>
+</svg>

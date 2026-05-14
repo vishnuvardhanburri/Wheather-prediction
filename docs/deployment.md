@@ -1,0 +1,37 @@
+# Deployment Notes
+
+This project runs anywhere Python 3 is available because it uses only the standard library.
+
+## Local
+
+```bash
+python3 server.py
+```
+
+Open:
+
+```text
+http://127.0.0.1:4173
+```
+
+## LAN Demo
+
+Change the host in `server.py`:
+
+```python
+run(host="0.0.0.0", port=4173)
+```
+
+Then open the machine IP from another device on the same network.
+
+## Production Direction
+
+For a real deployment, put the Python API behind:
+
+- Nginx or Caddy for TLS and compression
+- systemd, Docker, or a process manager
+- request logging and uptime monitoring
+- cache for repeated geocoding lookups
+- environment-controlled host/port
+
+The current version is intentionally dependency-light for demo, review, and portfolio use.

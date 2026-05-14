@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Models | Weather Prediction Using Machine Learning</title>
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app subpage">
+      <nav class="topbar page-topbar" aria-label="Application navigation">
+        <a class="brand" href="/" aria-label="WeatherML home">
+          <span class="brand-mark">W</span>
+          <span><strong>WeatherML</strong><small>Python AIML System</small></span>
+        </a>
+        <div class="nav-actions">
+          <a data-city-link="forecast.html" href="/forecast.html">Forecast</a>
+          <a class="active" data-city-link="models.html" href="/models.html">Models</a>
+          <a data-city-link="pipeline.html" href="/pipeline.html">Pipeline</a>
+        </div>
+      </nav>
+
+      <section class="page-shell">
+        <div class="page-head">
+          <div>
+            <p class="eyebrow">Model workspace</p>
+            <h1>Model comparison and explainability</h1>
+            <p class="lede">Review model accuracy, MAE, feature importance, and the per-model trace for the selected place.</p>
+          </div>
+          <form class="search-panel compact-search" id="searchForm">
+            <label for="cityInput">City name</label>
+            <div class="search-row">
+              <input id="cityInput" name="city" autocomplete="off" placeholder="Search any city, district, airport, or region" />
+              <button type="submit">Analyze</button>
+            </div>
+            <div class="search-results" id="searchResults" hidden></div>
+            <p class="search-hint">Search resolves real coordinates before the Python model scores the forecast.</p>
+          </form>
+        </div>
+
+        <section class="models-layout">
+          <article class="panel">
+            <div class="section-head compact">
+              <div><p class="eyebrow">Model comparison</p><h2>Leaderboard</h2></div>
+              <a class="pill link-pill" id="forecastLink" data-city-link="forecast.html" href="/forecast.html">Open forecast</a>
+            </div>
+            <div class="model-list" id="modelList"></div>
+          </article>
+          <article class="panel">
+            <div class="section-head compact">
+              <div><p class="eyebrow">Explainability</p><h2>Feature importance</h2></div>
+            </div>
+            <div class="feature-list" id="featureList"></div>
+          </article>
+          <article class="panel span-2">
+            <div class="section-head compact">
+              <div><p class="eyebrow">Selected place</p><h2 id="cityName">WeatherML</h2></div>
+              <span id="region" class="pill">Loading</span>
+            </div>
+            <div class="trace-grid" id="traceGrid"></div>
+            <p class="error-box" id="errorBox" hidden></p>
+          </article>
+        </section>
+      </section>
+    </main>
+    <script src="./script.js"></script>
+  </body>
+</html>

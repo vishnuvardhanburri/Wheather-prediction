@@ -1,0 +1,128 @@
+# Weather Prediction Using Machine Learning
+
+WeatherML is a standalone Python AIML weather prediction web app. It lets a user search any city, district, airport, or region, resolves the place with live geocoding, pulls current forecast data, and renders a multi-page dashboard with model confidence, forecast charts, model comparison, feature importance, and pipeline status.
+
+![Home screen](docs/images/home.png)
+
+## Why We Built This
+
+Most beginner weather prediction projects stop at a notebook or a basic form. This project turns the idea into a usable web application:
+
+- real place search instead of fixed city buttons
+- live forecast ingest instead of only static sample data
+- Python AIML scoring layer instead of frontend-only calculations
+- separate pages for forecast, models, and pipeline
+- explainability output so users can see why the prediction looks the way it does
+
+## Features
+
+- Live global search through `/api/search`
+- Six-day forecast through `/api/predict`
+- Multi-page frontend: Home, Forecast, Models, Pipeline
+- Current weather card with temperature, rain chance, humidity, wind, confidence, latency, and health
+- Forecast chart and day cards
+- Model leaderboard for Decision Tree, KNN, Logistic Regression, and Gradient Boosting
+- Feature-importance panel
+- Per-model temperature trace
+- Pipeline status view
+- No API key required
+- No third-party Python dependencies required
+
+## Screens
+
+| Forecast | Models |
+| --- | --- |
+| ![Forecast page](docs/images/forecast.png) | ![Models page](docs/images/models.png) |
+
+| Pipeline | Architecture |
+| --- | --- |
+| ![Pipeline page](docs/images/pipeline.png) | ![Architecture](docs/images/architecture.svg) |
+
+## Architecture
+
+```mermaid
+flowchart LR
+  User["User searches place"] --> UI["HTML/CSS/JS dashboard"]
+  UI --> SearchAPI["Python /api/search"]
+  SearchAPI --> Geo["Open-Meteo Geocoding"]
+  UI --> PredictAPI["Python /api/predict"]
+  PredictAPI --> Forecast["Open-Meteo Forecast"]
+  Forecast --> Engine["AIML scoring engine"]
+  Engine --> UI
+```
+
+Full architecture notes: [docs/architecture.md](docs/architecture.md)
+
+## Project Structure
+
+```text
+weather-prediction-ml/
+  backend/aiml/weather_engine.py   # Geocoding, forecast ingest, AIML scoring
+  server.py                        # Python HTTP server and API routes
+  index.html                       # Home/search page
+  forecast.html                    # Forecast dashboard
+  models.html                      # Models and explainability page
+  pipeline.html                    # Pipeline status page
+  script.js                        # Frontend API calls and rendering
+  styles.css                       # UI styling
+  docs/                            # Architecture, API docs, screenshots
+  tests/smoke_test.py              # Basic backend smoke test
+```
+
+## How To Run
+
+Requires Python 3.10+.
+
+```bash
+cd weather-prediction-ml
+python3 server.py
+```
+
+Open:
+
+```text
+http://127.0.0.1:4173
+```
+
+## Where To Run
+
+You can run it:
+
+- locally on macOS, Windows, or Linux
+- in a classroom or portfolio demo
+- on a small VPS
+- behind Nginx/Caddy for a public deployment
+- inside Docker or a Python process manager later
+
+Deployment notes: [docs/deployment.md](docs/deployment.md)
+
+## API
+
+Search places:
+
+```bash
+curl "http://127.0.0.1:4173/api/search?q=Visakhapatnam"
+```
+
+Predict weather:
+
+```bash
+curl "http://127.0.0.1:4173/api/predict?city=Visakhapatnam"
+```
+
+API reference: [docs/api.md](docs/api.md)
+
+## Test
+
+```bash
+python3 tests/smoke_test.py
+```
+
+## Data Source
+
+The app uses Open-Meteo services:
+
+- Geocoding API for place search
+- Forecast API for current and daily weather data
+
+The Python layer computes model traces, confidence, feature importance, and pipeline metadata from the live forecast response.

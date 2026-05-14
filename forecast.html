@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forecast | Weather Prediction Using Machine Learning</title>
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app subpage">
+      <nav class="topbar page-topbar" aria-label="Application navigation">
+        <a class="brand" href="/" aria-label="WeatherML home">
+          <span class="brand-mark">W</span>
+          <span><strong>WeatherML</strong><small>Python AIML System</small></span>
+        </a>
+        <div class="nav-actions">
+          <a class="active" data-city-link="forecast.html" href="/forecast.html">Forecast</a>
+          <a data-city-link="models.html" href="/models.html">Models</a>
+          <a data-city-link="pipeline.html" href="/pipeline.html">Pipeline</a>
+        </div>
+      </nav>
+
+      <section class="page-shell">
+        <div class="page-head">
+          <div>
+            <p class="eyebrow">Forecast workspace</p>
+            <h1>Six-day weather prediction</h1>
+            <p class="lede">Search any place and inspect the Python model output, confidence, rainfall, pressure, humidity, and wind.</p>
+          </div>
+          <form class="search-panel compact-search" id="searchForm">
+            <label for="cityInput">City name</label>
+            <div class="search-row">
+              <input id="cityInput" name="city" autocomplete="off" placeholder="Search any city, district, airport, or region" />
+              <button type="submit">Predict</button>
+            </div>
+            <div class="search-results" id="searchResults" hidden></div>
+            <p class="search-hint">Live global place search. Pick a city, district, or region and run the forecast.</p>
+          </form>
+        </div>
+
+        <section class="forecast-layout">
+          <article class="current-card" aria-live="polite">
+            <div class="current-head">
+              <div>
+                <p id="region" class="muted">Loading model output</p>
+                <h2 id="cityName">WeatherML</h2>
+              </div>
+              <span id="weatherIcon" class="weather-icon weather-mixed"></span>
+            </div>
+            <p id="condition" class="condition">Waiting for prediction</p>
+            <div class="metric-grid">
+              <div class="metric"><span>Temperature</span><strong id="temp">--</strong></div>
+              <div class="metric"><span>Rain chance</span><strong id="rain">--</strong></div>
+              <div class="metric"><span>Humidity</span><strong id="humidity">--</strong></div>
+              <div class="metric"><span>Wind</span><strong id="wind">--</strong></div>
+            </div>
+            <div class="confidence">
+              <span>Prediction confidence</span>
+              <strong id="confidence">--</strong>
+              <div class="bar"><i id="confidenceBar"></i></div>
+            </div>
+            <div class="ops-strip" aria-label="Inference metadata">
+              <div><span>Engine</span><strong id="engineName">--</strong></div>
+              <div><span>Latency</span><strong id="latency">--</strong></div>
+              <div><span>Health</span><strong id="sla">--</strong></div>
+            </div>
+            <p class="error-box" id="errorBox" hidden></p>
+          </article>
+
+          <article class="panel forecast-panel">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Forecast output</p>
+                <h2>Forecast curve</h2>
+              </div>
+              <a class="pill link-pill" id="modelsLink" data-city-link="models.html" href="/models.html">Model trace</a>
+            </div>
+            <div class="chart" id="tempChart" aria-label="Temperature and rain forecast chart"></div>
+            <div class="forecast-list" id="forecastList"></div>
+          </article>
+        </section>
+      </section>
+    </main>
+    <script src="./script.js"></script>
+  </body>
+</html>
