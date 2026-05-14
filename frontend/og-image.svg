@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">WeatherML social preview</title>
+  <desc id="desc">Live Python AIML weather prediction dashboard.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#07111f"/>
+      <stop offset="0.55" stop-color="#0d2235"/>
+      <stop offset="1" stop-color="#087ea4"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="920" cy="210" r="160" fill="none" stroke="#7dd3fc" stroke-opacity=".24" stroke-width="2"/>
+  <circle cx="920" cy="210" r="245" fill="none" stroke="#7dd3fc" stroke-opacity=".14" stroke-width="2"/>
+  <path d="M920 210 L1090 95" stroke="#b9f3ff" stroke-width="8" stroke-linecap="round" opacity=".85"/>
+  <rect x="70" y="70" width="92" height="92" rx="24" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.28)"/>
+  <text x="116" y="130" text-anchor="middle" fill="#fff" font-size="46" font-family="Arial, sans-serif" font-weight="800">W</text>
+  <text x="70" y="235" fill="#6ee7f9" font-size="30" font-family="Arial, sans-serif" font-weight="800" letter-spacing="6">PYTHON AIML WEATHER</text>
+  <text x="70" y="330" fill="#fff" font-size="76" font-family="Arial, sans-serif" font-weight="900">Weather Prediction</text>
+  <text x="70" y="410" fill="#fff" font-size="76" font-family="Arial, sans-serif" font-weight="900">Using Machine Learning</text>
+  <text x="70" y="500" fill="#dbeafe" font-size="34" font-family="Arial, sans-serif" font-weight="600">Forecasts, alerts, confidence, explainability, and live API.</text>
+  <text x="70" y="570" fill="#9ff6c8" font-size="28" font-family="Arial, sans-serif" font-weight="800">Developed by Vishnu Vardhan Burri</text>
+</svg>

@@ -12,6 +12,7 @@ from backend.aiml.weather_engine import WeatherEnsemble
 ROOT = Path(__file__).resolve().parent
 FRONTEND_DIR = ROOT / "frontend"
 ENGINE = WeatherEnsemble()
+APP_VERSION = os.environ.get("APP_VERSION", "1.0.0")
 
 
 class WeatherRequestHandler(SimpleHTTPRequestHandler):
@@ -20,6 +21,18 @@ class WeatherRequestHandler(SimpleHTTPRequestHandler):
 
     def do_GET(self):  # noqa: N802 - stdlib handler API
         parsed = urlparse(self.path)
+        if parsed.path == "/api/health":
+            self._send_json(
+                {
+                    "ok": True,
+                    "service": "WeatherML",
+                    "version": APP_VERSION,
+                    "frontend": FRONTEND_DIR.name,
+                    "engine": "WeatherEnsemble-v2",
+                },
+            )
+            return
+
         if parsed.path == "/api/predict":
             params = parse_qs(parsed.query)
             city = params.get("city", ["Hyderabad"])[0]
@@ -44,6 +57,17 @@ class WeatherRequestHandler(SimpleHTTPRequestHandler):
             self.path = "/index.html"
 
         super().do_GET()
+
+    def end_headers(self):
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("Referrer-Policy", "strict-origin-when-cross-origin")
+        self.send_header("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
+        super().end_headers()
+
+    def guess_type(self, path):
+        if path.endswith(".webmanifest"):
+            return "application/manifest+json"
+        return super().guess_type(path)
 
     def _send_json(self, payload: dict, status: int = 200):
         body = json.dumps(payload).encode("utf-8")

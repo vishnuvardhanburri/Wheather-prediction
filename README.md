@@ -1,5 +1,11 @@
 # Weather Prediction Using Machine Learning
 
+[![Live Demo](https://img.shields.io/badge/Live-Demo-0ea5e9?style=for-the-badge)](https://wheather-prediction.onrender.com/)
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776ab?style=for-the-badge&logo=python&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Ready-2496ed?style=for-the-badge&logo=docker&logoColor=white)
+![PWA](https://img.shields.io/badge/PWA-Enabled-5a0fc8?style=for-the-badge)
+![Rights](https://img.shields.io/badge/Rights-Reserved-111827?style=for-the-badge)
+
 WeatherML is a standalone Python AIML weather prediction web app. It lets a user search any city, district, airport, or region, resolves the place with live geocoding, pulls current forecast data, and renders a multi-page dashboard with model confidence, forecast charts, model comparison, feature importance, and pipeline status.
 
 Developed by Vishnu Vardhan Burri. All rights reserved.
@@ -36,6 +42,7 @@ Most beginner weather prediction projects stop at a notebook or a basic form. Th
 
 - Live global search through `/api/search`
 - Six-day forecast through `/api/predict`
+- Deployment health check through `/api/health`
 - Multi-page frontend: Home, Forecast, Models, Pipeline
 - Hourly forecast page for the next 24 hours
 - Weather risk alerts for storms, heavy rain, wind, and heat
@@ -136,8 +143,14 @@ weather-prediction-ml/
   server.py                        # Python HTTP server and API routes
   media/                           # README screenshots and architecture image
   docs/                            # Architecture, API, and deployment notes
+    quality-checklist.md           # Demo/deploy readiness checklist
   tests/smoke_test.py              # Basic backend smoke test
   Dockerfile                       # Container deployment
+  LICENSE                          # All rights reserved license notice
+  SECURITY.md                      # Vulnerability reporting and security notes
+  CONTRIBUTING.md                  # Local setup and contribution standard
+  CHANGELOG.md                     # Release notes
+  .env.example                     # Local environment example
   .dockerignore                    # Docker build hygiene
   .github/workflows/smoke-test.yml # GitHub Actions smoke test
 ```
@@ -241,6 +254,9 @@ API reference: [docs/api.md](docs/api.md)
 ## Test
 
 ```bash
+python3 -m py_compile server.py backend/aiml/weather_engine.py
+node --check frontend/script.js
+node --check frontend/service-worker.js
 python3 tests/smoke_test.py
 ```
 

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://wheather-prediction.onrender.com/</loc></url>
+  <url><loc>https://wheather-prediction.onrender.com/forecast.html</loc></url>
+  <url><loc>https://wheather-prediction.onrender.com/hourly.html</loc></url>
+  <url><loc>https://wheather-prediction.onrender.com/alerts.html</loc></url>
+  <url><loc>https://wheather-prediction.onrender.com/map.html</loc></url>
+  <url><loc>https://wheather-prediction.onrender.com/compare.html</loc></url>
+  <url><loc>https://wheather-prediction.onrender.com/models.html</loc></url>
+  <url><loc>https://wheather-prediction.onrender.com/pipeline.html</loc></url>
+  <url><loc>https://wheather-prediction.onrender.com/report.html</loc></url>
+  <url><loc>https://wheather-prediction.onrender.com/about.html</loc></url>
+</urlset>

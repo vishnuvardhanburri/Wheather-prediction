@@ -4,6 +4,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from backend.aiml.weather_engine import WeatherEnsemble
+from server import FRONTEND_DIR
 
 
 def main():
@@ -18,6 +19,8 @@ def main():
     assert result["models"]
     assert result["features"]
     assert result["meta"]["engine"] == "WeatherEnsemble-v2"
+    assert (FRONTEND_DIR / "index.html").exists()
+    assert (FRONTEND_DIR / "manifest.webmanifest").exists()
 
     print("Smoke test passed")
 

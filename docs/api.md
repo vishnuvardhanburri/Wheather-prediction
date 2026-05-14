@@ -56,6 +56,24 @@ Key response sections:
 - `pipeline`: backend flow status.
 - `meta`: engine, latency, health, source, cache TTL, and source unit system.
 
+## Health Check
+
+```http
+GET /api/health
+```
+
+Returns a deployment-friendly service check:
+
+```json
+{
+  "ok": true,
+  "service": "WeatherML",
+  "version": "1.0.0",
+  "frontend": "frontend",
+  "engine": "WeatherEnsemble-v2"
+}
+```
+
 ## Error Shape
 
 ```json

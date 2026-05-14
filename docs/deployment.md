@@ -58,6 +58,12 @@ Start command: python3 server.py
 Environment: HOST=0.0.0.0
 ```
 
+Optional health check path:
+
+```text
+/api/health
+```
+
 ## Railway
 
 Railway also provides a `PORT` variable and expects the app to listen on `0.0.0.0:$PORT`.

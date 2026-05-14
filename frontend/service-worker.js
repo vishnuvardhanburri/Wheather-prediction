@@ -17,7 +17,10 @@ const APP_SHELL = [
   "/styles.css",
   "/script.js",
   "/icon.svg",
+  "/og-image.svg",
   "/manifest.webmanifest",
+  "/robots.txt",
+  "/sitemap.xml",
 ];
 
 self.addEventListener("install", (event) => {

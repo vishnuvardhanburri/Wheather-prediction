@@ -14,5 +14,9 @@ jobs:
           python-version: "3.12"
       - name: Compile Python
         run: python -m py_compile server.py backend/aiml/weather_engine.py
+      - name: Validate frontend JavaScript
+        run: |
+          node --check frontend/script.js
+          node --check frontend/service-worker.js
       - name: Run smoke test
         run: python tests/smoke_test.py
