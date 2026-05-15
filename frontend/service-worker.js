@@ -1,4 +1,4 @@
-const CACHE_NAME = "weatherml-shell-v5";
+const CACHE_NAME = "weatherml-shell-v6";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -53,6 +53,11 @@ self.addEventListener("fetch", (event) => {
   }
 
   if (request.method !== "GET") return;
+
+  if (request.mode === "navigate" || request.headers.get("accept")?.includes("text/html")) {
+    event.respondWith(fetch(request).catch(() => caches.match(request).then((cached) => cached || caches.match("/index.html"))));
+    return;
+  }
 
   event.respondWith(
     caches.match(request).then((cached) => {

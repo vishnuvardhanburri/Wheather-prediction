@@ -47,6 +47,11 @@
             <p class="lede">
               Search any city or place to call the Python inference engine, generate a 14-day future forecast, compare model families, and inspect the signals driving every prediction.
             </p>
+            <div class="hero-badges" aria-label="WeatherML capabilities">
+              <span>14-day forecast</span>
+              <span>Live city search</span>
+              <span>Model trace</span>
+            </div>
 
             <form class="search-panel" id="searchForm">
               <label for="cityInput">City name</label>
@@ -65,9 +70,24 @@
               <a class="action-link" data-city-link="models.html" href="/models.html?city=Hyderabad">Compare models</a>
               <a class="action-link" data-city-link="map.html" href="/map.html?city=Hyderabad">Map</a>
             </div>
+            <div class="hero-insights" aria-label="Operational highlights">
+              <div>
+                <span>Forecast horizon</span>
+                <strong>14 days</strong>
+              </div>
+              <div>
+                <span>Runtime</span>
+                <strong>Python API</strong>
+              </div>
+              <div>
+                <span>Deployment</span>
+                <strong>Render live</strong>
+              </div>
+            </div>
           </div>
 
           <article class="current-card" aria-live="polite">
+            <div class="card-kicker"><span class="status-dot"></span> Live inference <small>Realtime API</small></div>
             <div class="current-head">
               <div>
                 <p id="region" class="muted">Telangana, India</p>

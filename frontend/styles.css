@@ -5,10 +5,13 @@
   --panel: #ffffff;
   --line: #dbe7ef;
   --blue: #087ea4;
+  --cyan: #38d5f5;
   --green: #1c9a68;
   --amber: #d97706;
   --dark: #07111f;
   --navy: #0a1628;
+  --glass: rgba(255, 255, 255, 0.1);
+  --glass-line: rgba(255, 255, 255, 0.16);
 }
 
 :root[data-theme="light"] {
@@ -72,10 +75,23 @@ input {
   color: #102033;
 }
 
+:root[data-theme="light"] .topbar,
+:root[data-theme="light"] .search-panel,
+:root[data-theme="light"] .hero-insights div {
+  border-color: rgba(15, 23, 42, 0.1);
+  background: rgba(255, 255, 255, 0.66);
+  box-shadow: 0 16px 52px rgba(15, 23, 42, 0.08);
+}
+
 :root[data-theme="light"] .lede,
 :root[data-theme="light"] .nav-actions,
 :root[data-theme="light"] .brand small {
   color: #475569;
+}
+
+:root[data-theme="light"] .hero-insights strong,
+:root[data-theme="light"] .hero-badges span {
+  color: #102033;
 }
 
 :root[data-theme="satellite"] .app {
@@ -103,7 +119,13 @@ input {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 14px 0;
+  margin-top: 12px;
+  border: 1px solid var(--glass-line);
+  border-radius: 14px;
+  background: rgba(8, 20, 34, 0.46);
+  box-shadow: 0 18px 55px rgba(2, 8, 23, 0.22);
+  padding: 10px 12px;
+  backdrop-filter: blur(18px);
 }
 
 .theme-switch,
@@ -159,6 +181,7 @@ input {
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
   font-weight: 800;
 }
 
@@ -189,12 +212,14 @@ input {
 .nav-actions a {
   border-radius: 999px;
   padding: 6px 8px;
+  transition: background .2s ease, color .2s ease, transform .2s ease;
 }
 
 .nav-actions a:hover,
 .nav-actions a.active {
   background: rgba(255, 255, 255, 0.1);
   color: white;
+  transform: translateY(-1px);
 }
 
 .hero-grid {
@@ -202,7 +227,7 @@ input {
   grid-template-columns: minmax(0, 0.95fr) minmax(420px, 0.8fr);
   gap: 42px;
   align-items: center;
-  padding: 36px 0 72px;
+  padding: 32px 0 32px;
 }
 
 .hero-copy,
@@ -244,10 +269,33 @@ h1 {
   line-height: 1.7;
 }
 
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.hero-badges span {
+  border: 1px solid rgba(110, 231, 249, 0.28);
+  border-radius: 999px;
+  background: rgba(14, 165, 233, 0.1);
+  color: #dff9ff;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 850;
+}
+
 .search-panel {
   position: relative;
   max-width: 660px;
-  margin-top: 34px;
+  margin-top: 24px;
+  border: 1px solid var(--glass-line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 58px rgba(2, 8, 23, 0.18);
+  padding: 14px;
+  backdrop-filter: blur(16px);
 }
 
 .search-panel label {
@@ -272,6 +320,13 @@ h1 {
   padding: 0 16px;
   color: white;
   background: rgba(255, 255, 255, 0.1);
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.search-row input:focus {
+  border-color: rgba(110, 231, 249, 0.72);
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 0 0 4px rgba(56, 213, 245, 0.12);
 }
 
 .search-results {
@@ -341,9 +396,16 @@ h1 {
   border-radius: 8px;
   padding: 0 22px;
   color: #06121f;
-  background: #b9f3ff;
+  background: linear-gradient(135deg, #b9f3ff, #7dd3fc);
+  box-shadow: 0 12px 34px rgba(14, 165, 233, 0.28);
   font-weight: 800;
   cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.search-row button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 42px rgba(14, 165, 233, 0.34);
 }
 
 .search-hint {
@@ -383,11 +445,53 @@ h1 {
   background: rgba(255, 255, 255, 0.08);
   font-size: 13px;
   font-weight: 800;
+  transition: transform .2s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
+}
+
+.action-link:hover,
+.link-pill:hover {
+  border-color: rgba(185, 243, 255, 0.42);
+  background: rgba(255, 255, 255, 0.13);
+  transform: translateY(-1px);
 }
 
 .action-link.primary {
   color: #06121f;
-  background: #b9f3ff;
+  border-color: rgba(185, 243, 255, 0.72);
+  background: linear-gradient(135deg, #b9f3ff, #8ee7f7);
+  box-shadow: 0 12px 34px rgba(14, 165, 233, 0.24);
+}
+
+.hero-insights {
+  display: grid;
+  max-width: 660px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.hero-insights div {
+  border: 1px solid var(--glass-line);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 13px;
+  backdrop-filter: blur(12px);
+}
+
+.hero-insights span,
+.card-kicker {
+  color: #a8c5da;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-insights strong {
+  display: block;
+  margin-top: 8px;
+  color: #ffffff;
+  font-size: 17px;
 }
 
 .is-loading .search-row button {
@@ -404,11 +508,53 @@ h1 {
 }
 
 .current-card {
+  position: relative;
+  overflow: hidden;
   padding: 28px;
   color: var(--ink);
   background:
+    radial-gradient(circle at 86% 10%, rgba(56, 213, 245, 0.16), transparent 28%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(246, 250, 252, 0.98)),
     var(--panel);
+}
+
+.current-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(120deg, rgba(8, 126, 164, 0.08), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.66), transparent 32%);
+}
+
+.current-card > * {
+  position: relative;
+}
+
+.card-kicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  color: #0f718e;
+}
+
+.card-kicker small {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.16);
 }
 
 .decision-brief {
@@ -455,6 +601,7 @@ h1 {
   place-items: center;
   border-radius: 18px;
   background: #e0f7ff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 18px 38px rgba(8, 126, 164, 0.12);
 }
 
 .weather-icon::before,
@@ -518,6 +665,13 @@ h1 {
   border-radius: 8px;
   background: #f3f8fb;
   padding: 15px;
+  transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+}
+
+.metric:hover {
+  background: #edf8fc;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.06);
+  transform: translateY(-2px);
 }
 
 .metric span,
@@ -558,6 +712,7 @@ h1 {
   width: 86%;
   border-radius: inherit;
   background: linear-gradient(90deg, var(--blue), var(--green));
+  box-shadow: 0 0 24px rgba(28, 154, 104, 0.42);
 }
 
 .ops-strip {
@@ -600,6 +755,12 @@ h1 {
 
 .panel {
   padding: 24px;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.panel:hover {
+  box-shadow: 0 28px 86px rgba(15, 23, 42, 0.11);
+  transform: translateY(-1px);
 }
 
 .section-head {
@@ -630,13 +791,17 @@ h1 {
 
 .chart {
   display: grid;
+  width: 100%;
+  max-width: 100%;
   align-items: end;
   gap: 12px;
   height: 280px;
   overflow-x: auto;
+  contain: paint;
   border-radius: 8px;
   background:
     linear-gradient(#e8f0f6 1px, transparent 1px) 0 0 / 100% 25%,
+    radial-gradient(circle at 18% 18%, rgba(56, 213, 245, 0.12), transparent 24%),
     #f8fbfd;
   padding: 18px 16px 42px;
 }
@@ -662,6 +827,7 @@ h1 {
   min-height: 16px;
   border-radius: 7px 7px 0 0;
   background: linear-gradient(180deg, #0ea5e9, #087ea4);
+  box-shadow: 0 10px 26px rgba(8, 126, 164, 0.22);
 }
 
 .chart-rain {
@@ -1257,6 +1423,10 @@ h1 {
     padding-top: 44px;
   }
 
+  .hero-insights {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .forecast-list {
     grid-template-columns: 1fr;
   }
@@ -1269,7 +1439,9 @@ h1 {
 
   .topbar {
     gap: 8px;
-    align-items: flex-start;
+    align-items: center;
+    margin-top: 8px;
+    padding: 9px;
   }
 
   .theme-switch,
@@ -1297,6 +1469,35 @@ h1 {
   .metric-grid {
     grid-template-columns: 1fr;
     flex-direction: column;
+  }
+
+  .hero-grid {
+    padding-top: 26px;
+  }
+
+  .hero-badges {
+    gap: 6px;
+  }
+
+  .hero-badges span {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+
+  .search-panel {
+    padding: 12px;
+  }
+
+  .hero-insights {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-insights div {
+    padding: 11px 12px;
+  }
+
+  .current-card {
+    padding: 20px;
   }
 
   .search-row button {
