@@ -120,6 +120,14 @@ flowchart LR
 
 Full architecture notes: [docs/architecture.md](docs/architecture.md)
 
+Human review docs:
+
+- [Project story](docs/project-story.md)
+- [Limitations](docs/limitations.md)
+- [Testing report](docs/testing-report.md)
+- [Demo script](docs/demo-script.md)
+- [Viva questions](docs/viva-questions.md)
+
 ## Project Structure
 
 ```text
@@ -136,6 +144,7 @@ weather-prediction-ml/
     favorites.html                 # Saved places dashboard
     about.html                     # Live demo and project details
     training.html                  # Historical training and evaluation page
+    notes.html                     # Human project notes and learning record
     report.html                    # Printable/downloadable report
     models.html                    # Models and explainability page
     pipeline.html                  # Pipeline status page
@@ -152,6 +161,11 @@ weather-prediction-ml/
   docs/                            # Architecture, API, and deployment notes
     quality-checklist.md           # Demo/deploy readiness checklist
     training.md                    # Historical training workflow
+    project-story.md               # Why this project exists
+    limitations.md                 # Honest scope and limitations
+    testing-report.md              # Manual/CI/Docker/Render test record
+    demo-script.md                 # Walkthrough script for review
+    viva-questions.md              # Viva/interview preparation
   tests/smoke_test.py              # Basic backend smoke test
   Dockerfile                       # Container deployment
   LICENSE                          # All rights reserved license notice

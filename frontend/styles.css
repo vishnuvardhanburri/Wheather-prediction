@@ -1096,6 +1096,12 @@ h1 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
 .span-2 {
   grid-column: 1 / -1;
 }
@@ -1222,6 +1228,7 @@ h1 {
   .page-head,
   .forecast-layout,
   .models-layout,
+  .notes-grid,
   .pipeline-page-grid,
   .trace-grid,
   .registry-grid,

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#07111f" />
+    <meta name="description" content="Project notes, limitations, testing story, and learning outcomes for WeatherML." />
+    <title>Project Notes | Weather Prediction Using Machine Learning</title>
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app subpage">
+      <nav class="topbar page-topbar" aria-label="Application navigation">
+        <a class="brand" href="/" aria-label="WeatherML home">
+          <span class="brand-mark">W</span>
+          <span><strong>WeatherML</strong><small>Python AIML System</small></span>
+        </a>
+        <div class="nav-actions">
+          <a data-city-link="forecast.html" href="/forecast.html">Forecast</a>
+          <a data-city-link="models.html" href="/models.html">Models</a>
+          <a href="/training.html">Training</a>
+          <a class="active" href="/notes.html">Notes</a>
+        </div>
+      </nav>
+
+      <section class="page-shell">
+        <div class="page-head">
+          <div>
+            <p class="eyebrow">Human review layer</p>
+            <h1>Project notes and learning record</h1>
+            <p class="lede">This page explains why the project exists, what changed during development, what was tested, what failed, and what still needs improvement.</p>
+          </div>
+          <div class="panel about-card">
+            <span class="pill">Owner</span>
+            <h2>Developed by Vishnu Vardhan Burri</h2>
+            <p class="muted">All rights reserved. Built as a live, explainable Python AIML weather project.</p>
+          </div>
+        </div>
+
+        <section class="notes-grid">
+          <article class="panel">
+            <div class="section-head compact">
+              <div><p class="eyebrow">Why</p><h2>Project story</h2></div>
+            </div>
+            <p class="condition">WeatherML was built to move beyond a basic weather form or notebook. The goal was to create a live deployed app that combines Python APIs, future forecasts, model confidence, explainability, training artifacts, and deployment proof.</p>
+            <a class="action-link" href="https://github.com/vishnuvardhanburri/Wheather-prediction/blob/main/docs/project-story.md">Read story</a>
+          </article>
+
+          <article class="panel">
+            <div class="section-head compact">
+              <div><p class="eyebrow">Reality check</p><h2>Limitations</h2></div>
+            </div>
+            <p class="condition">This app is not an official weather warning system. Forecast quality depends on external data, and the historical model registry is a transparent benchmark rather than a safety-critical model.</p>
+            <a class="action-link" href="https://github.com/vishnuvardhanburri/Wheather-prediction/blob/main/docs/limitations.md">Read limitations</a>
+          </article>
+
+          <article class="panel">
+            <div class="section-head compact">
+              <div><p class="eyebrow">Testing</p><h2>What was verified</h2></div>
+            </div>
+            <p class="condition">The project was tested locally, in Docker, through GitHub Actions, and on Render. A real CI failure caused by external API timeout was fixed by moving CI to an offline fixture.</p>
+            <a class="action-link" href="https://github.com/vishnuvardhanburri/Wheather-prediction/blob/main/docs/testing-report.md">Read testing report</a>
+          </article>
+
+          <article class="panel">
+            <div class="section-head compact">
+              <div><p class="eyebrow">Learning</p><h2>What I learned</h2></div>
+            </div>
+            <p class="condition">I learned how to connect Python with a frontend, deploy on Render, build Docker checks, create model artifacts, explain ML metrics, and maintain a GitHub-ready repository.</p>
+            <a class="action-link" href="https://github.com/vishnuvardhanburri/Wheather-prediction/blob/main/docs/viva-questions.md">Open viva prep</a>
+          </article>
+
+          <article class="panel span-2">
+            <div class="section-head compact">
+              <div><p class="eyebrow">Demo</p><h2>How to present it</h2></div>
+            </div>
+            <div class="hero-actions panel-actions">
+              <a class="action-link primary" href="https://wheather-prediction.onrender.com/">Live demo</a>
+              <a class="action-link" href="/training.html">Training page</a>
+              <a class="action-link" href="/artifacts/training/model-card.md">Model card</a>
+              <a class="action-link" href="https://github.com/vishnuvardhanburri/Wheather-prediction/blob/main/docs/demo-script.md">Demo script</a>
+            </div>
+          </article>
+        </section>
+      </section>
+      <footer class="app-footer"><p>Developed by Vishnu Vardhan Burri. All rights reserved. Live demo: <a href="https://wheather-prediction.onrender.com/">wheather-prediction.onrender.com</a></p></footer>
+    </main>
+    <script src="./script.js"></script>
+  </body>
+</html>

@@ -121,6 +121,14 @@ function installAboutLink() {
       nav.appendChild(training);
     }
 
+    if (!nav.querySelector('[href="/notes.html"]')) {
+      const notes = document.createElement("a");
+      notes.href = "/notes.html";
+      notes.textContent = "Notes";
+      if (window.location.pathname.endsWith("/notes.html")) notes.className = "active";
+      nav.appendChild(notes);
+    }
+
     if (!nav.querySelector('[href="/about.html"]')) {
       const link = document.createElement("a");
       link.href = "/about.html";
@@ -634,6 +642,7 @@ function targetPageForSubmit() {
   if (path.endsWith("/favorites.html")) return "favorites.html";
   if (path.endsWith("/compare.html")) return "compare.html";
   if (path.endsWith("/training.html")) return "training.html";
+  if (path.endsWith("/notes.html")) return "notes.html";
   return "forecast.html";
 }
 
