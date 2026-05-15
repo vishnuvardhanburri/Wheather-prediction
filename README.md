@@ -14,6 +14,8 @@ Live demo: [https://wheather-prediction.onrender.com/](https://wheather-predicti
 
 Install guide: [https://wheather-prediction.onrender.com/install.html](https://wheather-prediction.onrender.com/install.html)
 
+Dataset guide: [https://wheather-prediction.onrender.com/dataset.html](https://wheather-prediction.onrender.com/dataset.html)
+
 ![Home screen](media/home.png)
 
 ## Real-Time Test
@@ -48,6 +50,7 @@ Most beginner weather prediction projects stop at a notebook or a basic form. Th
 - Current-device location forecast through `/api/predict-coordinates`
 - Deployment health check through `/api/health`
 - Historical model registry through `/api/model-registry`
+- Dataset workflow page explaining collection, features, target, and artifacts
 - Multi-page frontend: Home, Forecast, Models, Pipeline
 - Hourly forecast page for the next 24 hours
 - Weather risk alerts for storms, heavy rain, wind, and heat
@@ -132,6 +135,7 @@ Human review docs:
 - [Testing report](docs/testing-report.md)
 - [Demo script](docs/demo-script.md)
 - [Viva questions](docs/viva-questions.md)
+- [Dataset implementation guide](docs/dataset.md)
 
 ## Project Structure
 
@@ -149,6 +153,7 @@ weather-prediction-ml/
     favorites.html                 # Saved places dashboard
     about.html                     # Live demo and project details
     install.html                   # Cross-platform PWA install guide
+    dataset.html                   # Dataset collection and training workflow
     training.html                  # Historical training and evaluation page
     notes.html                     # Human project notes and learning record
     report.html                    # Printable/downloadable report
@@ -167,6 +172,7 @@ weather-prediction-ml/
   docs/                            # Architecture, API, and deployment notes
     quality-checklist.md           # Demo/deploy readiness checklist
     training.md                    # Historical training workflow
+    dataset.md                     # Dataset source, schema, and implementation guide
     project-story.md               # Why this project exists
     limitations.md                 # Honest scope and limitations
     testing-report.md              # Manual/CI/Docker/Render test record

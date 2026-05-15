@@ -95,9 +95,9 @@ function installMobileNav() {
   if (document.querySelector(".mobile-bottom-nav")) return;
   const links = [
     ["Forecast", "forecast.html"],
-    ["Hourly", "hourly.html"],
     ["Alerts", "alerts.html"],
     ["Models", "models.html"],
+    ["Dataset", "dataset.html"],
     ["Install", "install.html"],
   ];
   const current = window.location.pathname.split("/").pop() || "index.html";
@@ -130,6 +130,14 @@ function installAboutLink() {
       notes.textContent = "Notes";
       if (window.location.pathname.endsWith("/notes.html")) notes.className = "active";
       nav.appendChild(notes);
+    }
+
+    if (!nav.querySelector('[href="/dataset.html"]')) {
+      const dataset = document.createElement("a");
+      dataset.href = "/dataset.html";
+      dataset.textContent = "Dataset";
+      if (window.location.pathname.endsWith("/dataset.html")) dataset.className = "active";
+      nav.appendChild(dataset);
     }
 
     if (!nav.querySelector('[href="/install.html"]')) {

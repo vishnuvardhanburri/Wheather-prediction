@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#07111f" />
+    <meta name="description" content="WeatherML dataset workflow: collect historical weather data, build ML features, train models, and publish evaluation artifacts." />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="WeatherML Dataset Workflow" />
+    <meta property="og:description" content="Learn how WeatherML takes Open-Meteo historical data and turns it into model-ready training artifacts." />
+    <meta property="og:url" content="https://wheather-prediction.onrender.com/dataset.html" />
+    <meta property="og:image" content="https://wheather-prediction.onrender.com/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://wheather-prediction.onrender.com/dataset.html" />
+    <title>Dataset | Weather Prediction Using Machine Learning</title>
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app subpage">
+      <nav class="topbar page-topbar" aria-label="Application navigation">
+        <a class="brand" href="/" aria-label="WeatherML home">
+          <span class="brand-mark">W</span>
+          <span><strong>WeatherML</strong><small>Python AIML System</small></span>
+        </a>
+        <div class="nav-actions">
+          <a data-city-link="forecast.html" href="/forecast.html">Forecast</a>
+          <a data-city-link="models.html" href="/models.html">Models</a>
+          <a href="/training.html">Training</a>
+          <a class="active" href="/dataset.html">Dataset</a>
+          <a href="/install.html">Install</a>
+        </div>
+      </nav>
+
+      <section class="page-shell">
+        <div class="page-head">
+          <div>
+            <p class="eyebrow">Dataset and implementation</p>
+            <h1>How WeatherML collects data and trains the model.</h1>
+            <p class="lede">The dataset is not manually downloaded from Kaggle. WeatherML builds it from live Open-Meteo historical archive data, converts it into ML rows, evaluates models, and publishes review artifacts.</p>
+          </div>
+          <div class="panel about-card">
+            <span class="pill">Training command</span>
+            <h2><code>python3 backend/aiml/training_pipeline.py --city Hyderabad --days 730</code></h2>
+            <p class="muted">Change the city and days to rebuild the dataset for another location.</p>
+          </div>
+        </div>
+
+        <section class="dataset-flow">
+          <article class="panel dataset-step">
+            <span>01</span>
+            <h2>Resolve location</h2>
+            <p>Use the geocoding API to convert a city name into latitude, longitude, timezone, and region metadata.</p>
+          </article>
+          <article class="panel dataset-step">
+            <span>02</span>
+            <h2>Fetch archive data</h2>
+            <p>Pull daily temperature, precipitation, wind, gust, and weather-code history from Open-Meteo.</p>
+          </article>
+          <article class="panel dataset-step">
+            <span>03</span>
+            <h2>Build ML rows</h2>
+            <p>Use yesterday's weather plus seasonal sine/cosine signals to predict the next day's maximum temperature.</p>
+          </article>
+          <article class="panel dataset-step">
+            <span>04</span>
+            <h2>Publish artifacts</h2>
+            <p>Write metrics, predictions, feature weights, and model card files consumed by the app and README.</p>
+          </article>
+        </section>
+
+        <section class="models-layout dataset-layout">
+          <article class="panel span-2">
+            <div class="section-head compact">
+              <div>
+                <p class="eyebrow">Schema</p>
+                <h2>Columns used for training</h2>
+              </div>
+              <span class="pill">Target: next-day high</span>
+            </div>
+            <div class="schema-grid">
+              <div><span>date</span><strong>Daily observation date</strong></div>
+              <div><span>temperature_2m_max</span><strong>Target and previous high</strong></div>
+              <div><span>temperature_2m_min</span><strong>Previous low signal</strong></div>
+              <div><span>temperature_2m_mean</span><strong>Previous mean signal</strong></div>
+              <div><span>precipitation_sum</span><strong>Previous rain signal</strong></div>
+              <div><span>wind_speed_10m_max</span><strong>Previous wind signal</strong></div>
+              <div><span>wind_gusts_10m_max</span><strong>Previous gust signal</strong></div>
+              <div><span>day_of_year_sin/cos</span><strong>Seasonality signal</strong></div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="section-head compact">
+              <div><p class="eyebrow">Implementation</p><h2>Where code lives</h2></div>
+            </div>
+            <div class="artifact-list">
+              <a class="action-link primary" href="https://github.com/vishnuvardhanburri/Wheather-prediction/blob/main/backend/aiml/training_pipeline.py">Training pipeline</a>
+              <a class="action-link" href="https://github.com/vishnuvardhanburri/Wheather-prediction/blob/main/backend/aiml/weather_engine.py">Inference engine</a>
+              <a class="action-link" href="/artifacts/training/model-card.md">Model card</a>
+              <a class="action-link" href="/artifacts/training/predictions.csv">Prediction CSV</a>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="section-head compact">
+              <div><p class="eyebrow">How to rebuild</p><h2>Change city or window</h2></div>
+            </div>
+            <div class="code-card">
+              <code>python3 backend/aiml/training_pipeline.py --city Visakhapatnam --days 1095</code>
+            </div>
+            <p class="condition">This fetches a new historical window, regenerates the model registry, and refreshes frontend artifacts.</p>
+          </article>
+        </section>
+      </section>
+
+      <footer class="app-footer"><p>Developed by Vishnu Vardhan Burri. All rights reserved. Live demo: <a href="https://wheather-prediction.onrender.com/">wheather-prediction.onrender.com</a></p></footer>
+    </main>
+    <script src="./script.js"></script>
+  </body>
+</html>
