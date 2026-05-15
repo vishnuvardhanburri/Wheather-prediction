@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#07111f" />
+    <meta name="description" content="Install WeatherML as a cross-platform Python AIML weather prediction app on Windows, macOS, Android, iPhone, and iPad." />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Install WeatherML" />
+    <meta property="og:description" content="Use WeatherML as an installable weather app across Windows, macOS, Android, and Apple devices." />
+    <meta property="og:url" content="https://wheather-prediction.onrender.com/install.html" />
+    <meta property="og:image" content="https://wheather-prediction.onrender.com/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://wheather-prediction.onrender.com/install.html" />
+    <title>Install App | Weather Prediction Using Machine Learning</title>
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app subpage">
+      <nav class="topbar page-topbar" aria-label="Application navigation">
+        <a class="brand" href="/" aria-label="WeatherML home">
+          <span class="brand-mark">W</span>
+          <span><strong>WeatherML</strong><small>Python AIML System</small></span>
+        </a>
+        <div class="nav-actions">
+          <a data-city-link="forecast.html" href="/forecast.html">Forecast</a>
+          <a data-city-link="hourly.html" href="/hourly.html">Hourly</a>
+          <a data-city-link="alerts.html" href="/alerts.html">Alerts</a>
+          <a data-city-link="models.html" href="/models.html">Models</a>
+          <a href="/training.html">Training</a>
+          <a class="active" href="/install.html">Install</a>
+        </div>
+      </nav>
+
+      <section class="page-shell">
+        <div class="page-head">
+          <div>
+            <p class="eyebrow">Cross-platform app</p>
+            <h1>Install WeatherML on Windows, macOS, Android, and Apple devices.</h1>
+            <p class="lede">WeatherML runs from the live Render deployment, but it can also be installed from the browser as a standalone PWA with app-style launching and cached shell assets.</p>
+          </div>
+          <div class="panel install-hero-card">
+            <span class="pill">Detected device</span>
+            <h2 id="detectedPlatform">This device</h2>
+            <p class="condition" id="installStatus">Install availability depends on your browser and device policy.</p>
+            <button class="action-link primary install-button" id="installAppButton" type="button">Install WeatherML</button>
+          </div>
+        </div>
+
+        <section class="platform-grid" aria-label="Platform install instructions">
+          <article class="panel platform-card">
+            <span>Windows</span>
+            <h2>Install from Edge or Chrome</h2>
+            <p>Open the live demo, choose the browser install option from the address bar or menu, then pin WeatherML to Start or taskbar.</p>
+          </article>
+          <article class="panel platform-card">
+            <span>macOS</span>
+            <h2>Add to Dock</h2>
+            <p>Use Safari, Chrome, or Edge install support to save WeatherML as a standalone app and keep it beside your everyday tools.</p>
+          </article>
+          <article class="panel platform-card">
+            <span>Android</span>
+            <h2>Add to home screen</h2>
+            <p>Open WeatherML in Chrome, tap install or add to home screen, then launch it like a native weather app.</p>
+          </article>
+          <article class="panel platform-card">
+            <span>iPhone and iPad</span>
+            <h2>Use Safari share</h2>
+            <p>Open the live link in Safari, tap Share, choose Add to Home Screen, and launch WeatherML from the icon.</p>
+          </article>
+        </section>
+
+        <section class="panel install-checklist">
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">App shell</p>
+              <h2>What installation enables</h2>
+            </div>
+            <span class="pill">PWA enabled</span>
+          </div>
+          <div class="install-feature-grid">
+            <div><span>Standalone mode</span><strong>No browser chrome after install</strong></div>
+            <div><span>Fast repeat visits</span><strong>Cached HTML, CSS, JS, and icons</strong></div>
+            <div><span>Live data</span><strong>Python API still fetches current forecasts</strong></div>
+            <div><span>Device friendly</span><strong>Desktop, tablet, and mobile layouts</strong></div>
+          </div>
+        </section>
+      </section>
+
+      <footer class="app-footer"><p>Developed by Vishnu Vardhan Burri. All rights reserved. Live demo: <a href="https://wheather-prediction.onrender.com/">wheather-prediction.onrender.com</a></p></footer>
+    </main>
+    <script src="./script.js"></script>
+  </body>
+</html>

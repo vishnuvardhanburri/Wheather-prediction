@@ -1,4 +1,4 @@
-const CACHE_NAME = "weatherml-shell-v6";
+const CACHE_NAME = "weatherml-shell-v7";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -14,6 +14,7 @@ const APP_SHELL = [
   "/timeline.html",
   "/explanation.html",
   "/about.html",
+  "/install.html",
   "/training.html",
   "/notes.html",
   "/styles.css",

@@ -26,6 +26,11 @@
       "name": "Compare Cities",
       "short_name": "Compare",
       "url": "/compare.html"
+    },
+    {
+      "name": "Install Guide",
+      "short_name": "Install",
+      "url": "/install.html"
     }
   ]
 }

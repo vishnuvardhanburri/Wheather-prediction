@@ -12,6 +12,8 @@ Developed by Vishnu Vardhan Burri. All rights reserved.
 
 Live demo: [https://wheather-prediction.onrender.com/](https://wheather-prediction.onrender.com/)
 
+Install guide: [https://wheather-prediction.onrender.com/install.html](https://wheather-prediction.onrender.com/install.html)
+
 ![Home screen](media/home.png)
 
 ## Real-Time Test
@@ -57,6 +59,7 @@ Most beginner weather prediction projects stop at a notebook or a basic form. Th
 - Dark, light, and satellite theme switch
 - Metric/imperial unit switch for temperature, wind, pressure, charts, cards, and voice/share outputs
 - Installable PWA shell with service worker caching for repeat visits
+- Cross-platform install guide for Windows, macOS, Android, iPhone, and iPad
 - Mobile bottom navigation for Forecast, Hourly, Alerts, Map, and Saved pages
 - Python-side API response caching for repeated live forecast/geocoding calls
 - Historical training pipeline using Open-Meteo archive data
@@ -143,6 +146,7 @@ weather-prediction-ml/
     timeline.html                  # Cinematic hourly timeline
     favorites.html                 # Saved places dashboard
     about.html                     # Live demo and project details
+    install.html                   # Cross-platform PWA install guide
     training.html                  # Historical training and evaluation page
     notes.html                     # Human project notes and learning record
     report.html                    # Printable/downloadable report

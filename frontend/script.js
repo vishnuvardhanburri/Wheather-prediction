@@ -20,6 +20,7 @@ const resultsPanel = document.getElementById("searchResults");
 const unitKey = "weatherml:units";
 let lastPrediction = null;
 let unitMode = localStorage.getItem(unitKey) || "metric";
+let deferredInstallPrompt = null;
 
 if (input) input.value = initialCity;
 applyTheme(localStorage.getItem("weatherml:theme") || "dark");
@@ -28,6 +29,7 @@ installThemeSwitch();
 installUnitSwitch();
 installAboutLink();
 installMobileNav();
+installAppExperience();
 registerServiceWorker();
 
 function setText(id, value) {
@@ -95,7 +97,7 @@ function installMobileNav() {
     ["Hourly", "hourly.html"],
     ["Alerts", "alerts.html"],
     ["Models", "models.html"],
-    ["Training", "training.html"],
+    ["Install", "install.html"],
   ];
   const current = window.location.pathname.split("/").pop() || "index.html";
   const nav = document.createElement("nav");
@@ -129,6 +131,14 @@ function installAboutLink() {
       nav.appendChild(notes);
     }
 
+    if (!nav.querySelector('[href="/install.html"]')) {
+      const install = document.createElement("a");
+      install.href = "/install.html";
+      install.textContent = "Install";
+      if (window.location.pathname.endsWith("/install.html")) install.className = "active";
+      nav.appendChild(install);
+    }
+
     if (!nav.querySelector('[href="/about.html"]')) {
       const link = document.createElement("a");
       link.href = "/about.html";
@@ -143,6 +153,51 @@ function registerServiceWorker() {
   if (!("serviceWorker" in navigator)) return;
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("/service-worker.js").catch(() => {});
+  });
+}
+
+function platformName() {
+  const ua = navigator.userAgent || "";
+  if (/Android/i.test(ua)) return "Android";
+  if (/iPhone|iPad|iPod/i.test(ua)) return "iPhone or iPad";
+  if (/Macintosh|Mac OS X/i.test(ua)) return "macOS";
+  if (/Windows/i.test(ua)) return "Windows";
+  return "this device";
+}
+
+function updateInstallStatus(message) {
+  setText("installStatus", message);
+}
+
+function installAppExperience() {
+  const installButton = document.getElementById("installAppButton");
+  const platformNode = document.getElementById("detectedPlatform");
+  if (platformNode) platformNode.textContent = platformName();
+
+  window.addEventListener("beforeinstallprompt", (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    if (installButton) installButton.disabled = false;
+    updateInstallStatus("Install is ready in this browser.");
+  });
+
+  window.addEventListener("appinstalled", () => {
+    deferredInstallPrompt = null;
+    if (installButton) installButton.disabled = true;
+    updateInstallStatus("WeatherML is installed on this device.");
+  });
+
+  if (!installButton) return;
+  installButton.disabled = true;
+  installButton.addEventListener("click", async () => {
+    if (!deferredInstallPrompt) {
+      updateInstallStatus("Use your browser menu to install WeatherML on this device.");
+      return;
+    }
+    deferredInstallPrompt.prompt();
+    const result = await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    updateInstallStatus(result.outcome === "accepted" ? "Install started." : "Install dismissed.");
   });
 }
 
