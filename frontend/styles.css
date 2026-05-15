@@ -1,4 +1,5 @@
 :root {
+  --hero-depth: 960px;
   --bg: #f3f7ff;
   --ink: #080b12;
   --muted: #5f6f86;
@@ -64,7 +65,7 @@ code {
 .app {
   min-height: 100vh;
   background:
-    linear-gradient(180deg, rgba(5, 7, 13, 0) 0, rgba(5, 7, 13, 0) 760px, #f3f7ff 760px),
+    linear-gradient(180deg, rgba(5, 7, 13, 0) 0, rgba(5, 7, 13, 0) var(--hero-depth), #f3f7ff var(--hero-depth)),
     radial-gradient(circle at 76% 22%, rgba(93, 183, 255, 0.22), transparent 30%),
     radial-gradient(circle at 12% 10%, rgba(11, 99, 206, 0.18), transparent 28%),
     linear-gradient(135deg, #05070d 0%, #0b1220 50%, #102a55 100%);
@@ -72,7 +73,7 @@ code {
 
 :root[data-theme="light"] .app {
   background:
-    linear-gradient(180deg, rgba(234, 242, 255, 0) 0, rgba(234, 242, 255, 0) 760px, #ffffff 760px),
+    linear-gradient(180deg, rgba(234, 242, 255, 0) 0, rgba(234, 242, 255, 0) var(--hero-depth), #ffffff var(--hero-depth)),
     linear-gradient(135deg, #eaf2ff, #ffffff);
 }
 
@@ -103,7 +104,7 @@ code {
 
 :root[data-theme="satellite"] .app {
   background:
-    linear-gradient(180deg, rgba(7, 17, 31, 0) 0, rgba(7, 17, 31, 0) 760px, #eef5ff 760px),
+    linear-gradient(180deg, rgba(7, 17, 31, 0) 0, rgba(7, 17, 31, 0) var(--hero-depth), #eef5ff var(--hero-depth)),
     radial-gradient(circle at 20% 20%, rgba(59, 130, 246, .24), transparent 24%),
     radial-gradient(circle at 75% 30%, rgba(147, 197, 253, .28), transparent 30%),
     linear-gradient(135deg, #05070d, #0d1b35);
@@ -470,8 +471,8 @@ h1 {
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 8px;
   padding: 12px 14px;
-  color: #dbeafe;
-  background: rgba(255, 255, 255, 0.08);
+  color: #eff6ff;
+  background: rgba(8, 16, 31, 0.52);
   font-size: 13px;
   font-weight: 800;
   transition: transform .2s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
@@ -480,7 +481,7 @@ h1 {
 .action-link:hover,
 .link-pill:hover {
   border-color: rgba(191, 219, 254, 0.5);
-  background: rgba(255, 255, 255, 0.13);
+  background: rgba(37, 99, 235, 0.26);
   transform: translateY(-1px);
 }
 
