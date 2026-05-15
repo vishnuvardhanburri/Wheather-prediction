@@ -55,7 +55,10 @@
             </div>
 
             <form class="search-panel" id="searchForm">
-              <label for="cityInput">City name</label>
+              <div class="search-label-row">
+                <label for="cityInput">City name</label>
+                <button class="location-button" id="useLocation" type="button">Use current location</button>
+              </div>
               <div class="search-row">
                 <input id="cityInput" name="city" value="Hyderabad" autocomplete="off" placeholder="Search any city, district, airport, or region" />
                 <button type="submit">Predict</button>

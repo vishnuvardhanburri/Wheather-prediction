@@ -17,6 +17,7 @@ const params = new URLSearchParams(window.location.search);
 const initialCity = params.get("city") || "Hyderabad";
 const input = document.getElementById("cityInput");
 const resultsPanel = document.getElementById("searchResults");
+const locationButton = document.getElementById("useLocation");
 const unitKey = "weatherml:units";
 let lastPrediction = null;
 let unitMode = localStorage.getItem(unitKey) || "metric";
@@ -775,10 +776,47 @@ async function submit(city) {
   }
 }
 
+async function submitCoordinates(latitude, longitude) {
+  document.body.classList.add("is-loading");
+  try {
+    const response = await fetch(`/api/predict-coordinates?lat=${encodeURIComponent(latitude)}&lon=${encodeURIComponent(longitude)}`);
+    const data = await response.json();
+    if (!response.ok || data.error) throw new Error(data.message || "Unable to load location forecast.");
+    renderPrediction(data);
+    if (input) input.value = data.profile.city || "Current location";
+    history.replaceState(null, "", cityUrl(targetPageForSubmit(), data.profile.city || "Current location"));
+  } catch (error) {
+    alert(error instanceof Error ? error.message : "Location forecast failed.");
+  } finally {
+    document.body.classList.remove("is-loading");
+  }
+}
+
+function requestCurrentLocation() {
+  if (!navigator.geolocation) {
+    alert("Geolocation is not available in this browser.");
+    return;
+  }
+  if (locationButton) locationButton.textContent = "Locating...";
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      if (locationButton) locationButton.textContent = "Use current location";
+      submitCoordinates(position.coords.latitude, position.coords.longitude);
+    },
+    () => {
+      if (locationButton) locationButton.textContent = "Use current location";
+      alert("Location permission was blocked or unavailable.");
+    },
+    { enableHighAccuracy: false, timeout: 10000, maximumAge: 600000 },
+  );
+}
+
 document.getElementById("searchForm")?.addEventListener("submit", (event) => {
   event.preventDefault();
   submit(input?.value || initialCity);
 });
+
+locationButton?.addEventListener("click", requestCurrentLocation);
 
 document.getElementById("saveFavorite")?.addEventListener("click", saveFavorite);
 document.getElementById("downloadJson")?.addEventListener("click", downloadJson);

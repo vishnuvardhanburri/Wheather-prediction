@@ -44,6 +44,18 @@ class WeatherRequestHandler(SimpleHTTPRequestHandler):
                 self._send_json({"error": True, "message": f"Prediction service error: {exc}"}, status=502)
             return
 
+        if parsed.path == "/api/predict-coordinates":
+            params = parse_qs(parsed.query)
+            try:
+                latitude = float(params.get("lat", [""])[0])
+                longitude = float(params.get("lon", [""])[0])
+                self._send_json(ENGINE.predict_coordinates(latitude, longitude))
+            except ValueError as exc:
+                self._send_json({"error": True, "message": str(exc)}, status=400)
+            except Exception as exc:
+                self._send_json({"error": True, "message": f"Prediction service error: {exc}"}, status=502)
+            return
+
         if parsed.path == "/api/search":
             params = parse_qs(parsed.query)
             query = params.get("q", [""])[0]
@@ -75,7 +87,7 @@ class WeatherRequestHandler(SimpleHTTPRequestHandler):
     def end_headers(self):
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("Referrer-Policy", "strict-origin-when-cross-origin")
-        self.send_header("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
+        self.send_header("Permissions-Policy", "geolocation=(self), microphone=(), camera=()")
         super().end_headers()
 
     def guess_type(self, path):

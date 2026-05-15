@@ -125,6 +125,14 @@ class WeatherEnsemble:
     def predict(self, city: str) -> dict[str, Any]:
         started = perf_counter()
         location = self._resolve_location(city)
+        return self._predict_location(location, started)
+
+    def predict_coordinates(self, latitude: float, longitude: float) -> dict[str, Any]:
+        started = perf_counter()
+        location = self._location_from_coordinates(latitude, longitude)
+        return self._predict_location(location, started)
+
+    def _predict_location(self, location: dict[str, Any], started: float) -> dict[str, Any]:
         raw = self._fetch_forecast(location)
         forecast = self._shape_forecast(raw)
         hourly = self._shape_hourly(raw)
@@ -215,6 +223,21 @@ class WeatherEnsemble:
         if not results:
             raise ValueError(f"No matching place found for '{city}'.")
         return results[0]
+
+    @staticmethod
+    def _location_from_coordinates(latitude: float, longitude: float) -> dict[str, Any]:
+        if not (-90 <= latitude <= 90 and -180 <= longitude <= 180):
+            raise ValueError("Coordinates are outside valid latitude/longitude bounds.")
+        return {
+            "id": f"{latitude:.4f},{longitude:.4f}",
+            "name": "Current location",
+            "region": "Device location",
+            "country": "",
+            "latitude": round(latitude, 4),
+            "longitude": round(longitude, 4),
+            "timezone": "auto",
+            "population": None,
+        }
 
     def _fetch_forecast(self, location: dict[str, Any]) -> dict[str, Any]:
         return _get_json(

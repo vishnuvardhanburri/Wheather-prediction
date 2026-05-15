@@ -34,6 +34,7 @@ Live forecast UI:
 Most beginner weather prediction projects stop at a notebook or a basic form. This project turns the idea into a usable web application:
 
 - real place search instead of fixed city buttons
+- current-location lookup for app-like mobile and desktop use
 - live forecast ingest instead of only static sample data
 - Python AIML scoring layer instead of frontend-only calculations
 - separate pages for forecast, models, and pipeline
@@ -44,6 +45,7 @@ Most beginner weather prediction projects stop at a notebook or a basic form. Th
 
 - Live global search through `/api/search`
 - 14-day future forecast through `/api/predict`
+- Current-device location forecast through `/api/predict-coordinates`
 - Deployment health check through `/api/health`
 - Historical model registry through `/api/model-registry`
 - Multi-page frontend: Home, Forecast, Models, Pipeline

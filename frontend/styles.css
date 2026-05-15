@@ -300,10 +300,32 @@ h1 {
 
 .search-panel label {
   display: block;
-  margin-bottom: 10px;
   color: #dbeafe;
   font-size: 13px;
   font-weight: 700;
+}
+
+.search-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.location-button {
+  border: 1px solid rgba(185, 243, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(185, 243, 255, 0.1);
+  color: #dff9ff;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.location-button:hover {
+  background: rgba(185, 243, 255, 0.16);
 }
 
 .search-row {
@@ -1567,6 +1589,11 @@ h1 {
 
   .search-panel {
     padding: 12px;
+  }
+
+  .search-label-row {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .hero-insights {
