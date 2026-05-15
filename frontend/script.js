@@ -339,7 +339,8 @@ function renderPrediction(data) {
 function renderForecast(forecast) {
   const chart = document.getElementById("tempChart");
   if (chart) {
-    chart.style.gridTemplateColumns = `repeat(${forecast.length}, minmax(54px, 1fr))`;
+    const minColumnWidth = window.matchMedia("(max-width: 560px)").matches ? 16 : 54;
+    chart.style.gridTemplateColumns = `repeat(${forecast.length}, minmax(${minColumnWidth}px, 1fr))`;
     const maxTemp = Math.max(...forecast.map((day) => day.temperatureMax || day.temperature));
     chart.innerHTML = forecast
       .map((day) => {

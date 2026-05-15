@@ -1,32 +1,32 @@
 :root {
-  --bg: #eef6fb;
-  --ink: #0f172a;
-  --muted: #64748b;
+  --bg: #f3f7ff;
+  --ink: #080b12;
+  --muted: #5f6f86;
   --panel: #ffffff;
-  --line: #dbe7ef;
-  --blue: #087ea4;
-  --cyan: #38d5f5;
-  --green: #1c9a68;
+  --line: #d9e5f5;
+  --blue: #0b63ce;
+  --cyan: #5db7ff;
+  --green: #2563eb;
   --amber: #d97706;
-  --dark: #07111f;
-  --navy: #0a1628;
+  --dark: #05070d;
+  --navy: #0b1220;
   --glass: rgba(255, 255, 255, 0.1);
   --glass-line: rgba(255, 255, 255, 0.16);
 }
 
 :root[data-theme="light"] {
-  --bg: #f8fbff;
-  --ink: #102033;
+  --bg: #ffffff;
+  --ink: #080b12;
   --panel: #ffffff;
-  --dark: #dcecf6;
+  --dark: #eaf2ff;
 }
 
 :root[data-theme="satellite"] {
-  --bg: #d8eee9;
-  --ink: #07111f;
-  --blue: #2dd4bf;
-  --green: #84cc16;
-  --dark: #071d19;
+  --bg: #eef5ff;
+  --ink: #060a12;
+  --blue: #1d4ed8;
+  --green: #3b82f6;
+  --dark: #07111f;
 }
 
 * {
@@ -39,6 +39,7 @@ html {
 
 body {
   margin: 0;
+  overflow-x: hidden;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: var(--ink);
   background: var(--bg);
@@ -63,16 +64,16 @@ code {
 .app {
   min-height: 100vh;
   background:
-    linear-gradient(180deg, rgba(7, 17, 31, 0) 0, rgba(7, 17, 31, 0) 760px, #eef6fb 760px),
-    radial-gradient(circle at 74% 24%, rgba(125, 211, 252, 0.2), transparent 30%),
-    radial-gradient(circle at 10% 8%, rgba(34, 197, 94, 0.1), transparent 26%),
-    linear-gradient(135deg, #07111f 0%, #0d2235 52%, #0b2d3a 100%);
+    linear-gradient(180deg, rgba(5, 7, 13, 0) 0, rgba(5, 7, 13, 0) 760px, #f3f7ff 760px),
+    radial-gradient(circle at 76% 22%, rgba(93, 183, 255, 0.22), transparent 30%),
+    radial-gradient(circle at 12% 10%, rgba(11, 99, 206, 0.18), transparent 28%),
+    linear-gradient(135deg, #05070d 0%, #0b1220 50%, #102a55 100%);
 }
 
 :root[data-theme="light"] .app {
   background:
-    linear-gradient(180deg, rgba(236, 248, 255, 0) 0, rgba(236, 248, 255, 0) 760px, #f8fbff 760px),
-    linear-gradient(135deg, #dff4ff, #f8fbff);
+    linear-gradient(180deg, rgba(234, 242, 255, 0) 0, rgba(234, 242, 255, 0) 760px, #ffffff 760px),
+    linear-gradient(135deg, #eaf2ff, #ffffff);
 }
 
 :root[data-theme="light"] .hero,
@@ -102,10 +103,10 @@ code {
 
 :root[data-theme="satellite"] .app {
   background:
-    linear-gradient(180deg, rgba(7, 29, 25, 0) 0, rgba(7, 29, 25, 0) 760px, #e7f5ef 760px),
-    radial-gradient(circle at 20% 20%, rgba(132, 204, 22, .28), transparent 24%),
-    radial-gradient(circle at 75% 30%, rgba(45, 212, 191, .32), transparent 30%),
-    linear-gradient(135deg, #071d19, #163b35);
+    linear-gradient(180deg, rgba(7, 17, 31, 0) 0, rgba(7, 17, 31, 0) 760px, #eef5ff 760px),
+    radial-gradient(circle at 20% 20%, rgba(59, 130, 246, .24), transparent 24%),
+    radial-gradient(circle at 75% 30%, rgba(147, 197, 253, .28), transparent 30%),
+    linear-gradient(135deg, #05070d, #0d1b35);
 }
 
 .hero,
@@ -158,8 +159,8 @@ code {
   height: 560px;
   pointer-events: none;
   background:
-    repeating-radial-gradient(circle at 78% 48%, rgba(125, 211, 252, .22) 0 2px, transparent 2px 30px),
-    conic-gradient(from 0deg at 78% 48%, transparent 0 72deg, rgba(125, 211, 252, .16) 76deg, transparent 90deg);
+    repeating-radial-gradient(circle at 78% 48%, rgba(93, 183, 255, .22) 0 2px, transparent 2px 30px),
+    conic-gradient(from 0deg at 78% 48%, transparent 0 72deg, rgba(37, 99, 235, .16) 76deg, transparent 90deg);
   mask-image: radial-gradient(circle at 78% 48%, black, transparent 42%);
   animation: radarSweep 8s linear infinite;
 }
@@ -246,7 +247,7 @@ code {
 
 .eyebrow {
   margin: 0 0 12px;
-  color: #6ee7f9;
+  color: #93c5fd;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -283,10 +284,10 @@ h1 {
 }
 
 .hero-badges span {
-  border: 1px solid rgba(110, 231, 249, 0.28);
+  border: 1px solid rgba(147, 197, 253, 0.34);
   border-radius: 999px;
-  background: rgba(14, 165, 233, 0.1);
-  color: #dff9ff;
+  background: rgba(37, 99, 235, 0.16);
+  color: #eff6ff;
   padding: 7px 10px;
   font-size: 12px;
   font-weight: 850;
@@ -320,10 +321,10 @@ h1 {
 }
 
 .location-button {
-  border: 1px solid rgba(185, 243, 255, 0.28);
+  border: 1px solid rgba(191, 219, 254, 0.34);
   border-radius: 999px;
-  background: rgba(185, 243, 255, 0.1);
-  color: #dff9ff;
+  background: rgba(59, 130, 246, 0.16);
+  color: #eff6ff;
   padding: 6px 10px;
   font-size: 12px;
   font-weight: 850;
@@ -331,7 +332,7 @@ h1 {
 }
 
 .location-button:hover {
-  background: rgba(185, 243, 255, 0.16);
+  background: rgba(59, 130, 246, 0.24);
 }
 
 .search-row {
@@ -352,9 +353,9 @@ h1 {
 }
 
 .search-row input:focus {
-  border-color: rgba(110, 231, 249, 0.72);
+  border-color: rgba(147, 197, 253, 0.78);
   background: rgba(255, 255, 255, 0.14);
-  box-shadow: 0 0 0 4px rgba(56, 213, 245, 0.12);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.16);
 }
 
 .search-results {
@@ -408,7 +409,7 @@ h1 {
 }
 
 .search-option small {
-  color: #087ea4;
+  color: #0b63ce;
   font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
@@ -424,8 +425,8 @@ h1 {
   border-radius: 8px;
   padding: 0 22px;
   color: #06121f;
-  background: linear-gradient(135deg, #b9f3ff, #7dd3fc);
-  box-shadow: 0 12px 34px rgba(14, 165, 233, 0.28);
+  background: linear-gradient(135deg, #ffffff, #bfdbfe);
+  box-shadow: 0 12px 34px rgba(37, 99, 235, 0.28);
   font-weight: 800;
   cursor: pointer;
   transition: transform .2s ease, box-shadow .2s ease;
@@ -433,7 +434,7 @@ h1 {
 
 .search-row button:hover {
   transform: translateY(-1px);
-  box-shadow: 0 16px 42px rgba(14, 165, 233, 0.34);
+  box-shadow: 0 16px 42px rgba(37, 99, 235, 0.34);
 }
 
 .search-hint {
@@ -478,16 +479,16 @@ h1 {
 
 .action-link:hover,
 .link-pill:hover {
-  border-color: rgba(185, 243, 255, 0.42);
+  border-color: rgba(191, 219, 254, 0.5);
   background: rgba(255, 255, 255, 0.13);
   transform: translateY(-1px);
 }
 
 .action-link.primary {
   color: #06121f;
-  border-color: rgba(185, 243, 255, 0.72);
-  background: linear-gradient(135deg, #b9f3ff, #8ee7f7);
-  box-shadow: 0 12px 34px rgba(14, 165, 233, 0.24);
+  border-color: rgba(191, 219, 254, 0.82);
+  background: linear-gradient(135deg, #ffffff, #bfdbfe);
+  box-shadow: 0 12px 34px rgba(37, 99, 235, 0.24);
 }
 
 .hero-insights {
@@ -541,7 +542,7 @@ h1 {
   padding: 28px;
   color: var(--ink);
   background:
-    radial-gradient(circle at 86% 10%, rgba(56, 213, 245, 0.16), transparent 28%),
+    radial-gradient(circle at 86% 10%, rgba(59, 130, 246, 0.16), transparent 28%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(246, 250, 252, 0.98)),
     var(--panel);
 }
@@ -552,7 +553,7 @@ h1 {
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(120deg, rgba(8, 126, 164, 0.08), transparent 34%),
+    linear-gradient(120deg, rgba(37, 99, 235, 0.08), transparent 34%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.66), transparent 32%);
 }
 
@@ -565,7 +566,7 @@ h1 {
   align-items: center;
   gap: 8px;
   margin-bottom: 18px;
-  color: #0f718e;
+  color: #1d4ed8;
 }
 
 .card-kicker small {
@@ -581,8 +582,8 @@ h1 {
   width: 9px;
   height: 9px;
   border-radius: 999px;
-  background: #22c55e;
-  box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.16);
+  background: #2563eb;
+  box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.16);
 }
 
 .decision-brief {
@@ -628,8 +629,8 @@ h1 {
   height: 74px;
   place-items: center;
   border-radius: 18px;
-  background: #e0f7ff;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 18px 38px rgba(8, 126, 164, 0.12);
+  background: #eaf2ff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 18px 38px rgba(37, 99, 235, 0.12);
 }
 
 .weather-icon::before,
@@ -648,22 +649,22 @@ h1 {
 .weather-icon::after {
   width: 36px;
   height: 36px;
-  background: #e0f7ff;
+  background: #eaf2ff;
   transform: translateX(12px);
 }
 
 .weather-rain::before {
   width: 42px;
   height: 28px;
-  background: #0f4c81;
+  background: #1d4ed8;
 }
 
 .weather-rain::after {
   width: 8px;
   height: 24px;
   border-radius: 8px;
-  background: #28a6c8;
-  box-shadow: 14px 8px 0 #28a6c8, -14px 8px 0 #28a6c8;
+  background: #60a5fa;
+  box-shadow: 14px 8px 0 #60a5fa, -14px 8px 0 #60a5fa;
   transform: translateY(22px);
 }
 
@@ -739,8 +740,8 @@ h1 {
   height: 100%;
   width: 86%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--blue), var(--green));
-  box-shadow: 0 0 24px rgba(28, 154, 104, 0.42);
+  background: linear-gradient(90deg, #0b63ce, #60a5fa);
+  box-shadow: 0 0 24px rgba(37, 99, 235, 0.36);
 }
 
 .ops-strip {
@@ -810,8 +811,8 @@ h1 {
 
 .pill {
   border-radius: 999px;
-  background: #e0f7ff;
-  color: #075985;
+  background: #eaf2ff;
+  color: #1d4ed8;
   padding: 7px 12px;
   font-size: 12px;
   font-weight: 800;
@@ -825,11 +826,12 @@ h1 {
   gap: 12px;
   height: 280px;
   overflow-x: auto;
-  contain: paint;
+  overflow-y: hidden;
+  contain: layout paint;
   border-radius: 8px;
   background:
     linear-gradient(#e8f0f6 1px, transparent 1px) 0 0 / 100% 25%,
-    radial-gradient(circle at 18% 18%, rgba(56, 213, 245, 0.12), transparent 24%),
+    radial-gradient(circle at 18% 18%, rgba(59, 130, 246, 0.12), transparent 24%),
     #f8fbfd;
   padding: 18px 16px 42px;
 }
@@ -845,7 +847,7 @@ h1 {
 .chart-value {
   position: absolute;
   top: -2px;
-  color: #075985;
+  color: #1d4ed8;
   font-size: 12px;
   font-weight: 800;
 }
@@ -854,8 +856,8 @@ h1 {
   width: 100%;
   min-height: 16px;
   border-radius: 7px 7px 0 0;
-  background: linear-gradient(180deg, #0ea5e9, #087ea4);
-  box-shadow: 0 10px 26px rgba(8, 126, 164, 0.22);
+  background: linear-gradient(180deg, #60a5fa, #0b63ce);
+  box-shadow: 0 10px 26px rgba(37, 99, 235, 0.22);
 }
 
 .chart-rain {
@@ -864,7 +866,7 @@ h1 {
   width: 42%;
   min-height: 10px;
   border-radius: 999px 999px 0 0;
-  background: rgba(28, 154, 104, 0.65);
+  background: rgba(96, 165, 250, 0.65);
 }
 
 .chart-label {
@@ -938,8 +940,8 @@ h1 {
   display: inline-flex;
   border-radius: 999px;
   padding: 5px 8px;
-  background: #e0f2fe;
-  color: #075985;
+  background: #eaf2ff;
+  color: #1d4ed8;
   font-size: 11px;
   font-weight: 900;
   text-transform: uppercase;
@@ -1003,7 +1005,7 @@ h1 {
 .compare-search button {
   border: 0;
   color: #06121f;
-  background: #b9f3ff;
+  background: #bfdbfe;
   font-weight: 900;
 }
 
@@ -1031,21 +1033,21 @@ h1 {
   border-radius: 10px;
   padding: 18px;
   color: white;
-  background: linear-gradient(160deg, #0a1628, #155e75);
+  background: linear-gradient(160deg, #05070d, #1d4ed8);
   animation: timelineRise .55s ease both;
   animation-delay: calc(var(--delay) * 50ms);
 }
 
 .timeline-rain {
-  background: linear-gradient(160deg, #0f172a, #075985);
+  background: linear-gradient(160deg, #05070d, #0b63ce);
 }
 
 .timeline-clear {
-  background: linear-gradient(160deg, #0369a1, #f59e0b);
+  background: linear-gradient(160deg, #0b1220, #60a5fa);
 }
 
 .timeline-cloud {
-  background: linear-gradient(160deg, #334155, #0e7490);
+  background: linear-gradient(160deg, #111827, #1d4ed8);
 }
 
 .timeline-card strong,
@@ -1079,9 +1081,9 @@ h1 {
   overflow: hidden;
   border-radius: 8px;
   background:
-    radial-gradient(circle at 25% 30%, rgba(14, 165, 233, 0.45), transparent 22%),
-    radial-gradient(circle at 72% 56%, rgba(34, 197, 94, 0.22), transparent 18%),
-    linear-gradient(135deg, #0a1628, #123a50);
+    radial-gradient(circle at 25% 30%, rgba(59, 130, 246, 0.45), transparent 22%),
+    radial-gradient(circle at 72% 56%, rgba(147, 197, 253, 0.22), transparent 18%),
+    linear-gradient(135deg, #05070d, #102a55);
 }
 
 .map-grid-lines {
@@ -1105,8 +1107,8 @@ h1 {
   border: 4px solid rgba(255,255,255,.9);
   border-radius: 999px;
   color: white;
-  background: #087ea4;
-  box-shadow: 0 20px 80px rgba(8,126,164,.55);
+  background: #0b63ce;
+  box-shadow: 0 20px 80px rgba(37,99,235,.55);
   font-size: 22px;
   font-weight: 900;
 }
@@ -1319,7 +1321,7 @@ h1 {
   height: 42px;
   place-items: center;
   border-radius: 999px;
-  background: linear-gradient(135deg, #0ea5e9, #22c55e);
+  background: linear-gradient(135deg, #05070d, #2563eb);
   color: white;
   font-size: 13px;
   font-weight: 900;
@@ -1352,7 +1354,7 @@ h1 {
 
 .schema-grid span {
   display: block;
-  color: #075985;
+  color: #1d4ed8;
   font-size: 12px;
   font-weight: 900;
   overflow-wrap: anywhere;
@@ -1395,8 +1397,8 @@ h1 {
 .platform-card span {
   display: inline-flex;
   border-radius: 999px;
-  background: #e0f7ff;
-  color: #075985;
+  background: #eaf2ff;
+  color: #1d4ed8;
   padding: 7px 10px;
   font-size: 12px;
   font-weight: 900;
@@ -1521,7 +1523,7 @@ h1 {
 }
 
 .app-footer a {
-  color: #087ea4;
+  color: #0b63ce;
 }
 
 .mobile-bottom-nav {
@@ -1722,9 +1724,9 @@ h1 {
     font-weight: 900;
   }
 
-  .mobile-nav-item.active {
-    color: #062131;
-    background: #b9f3ff;
+.mobile-nav-item.active {
+    color: #06121f;
+    background: #bfdbfe;
   }
 }
 
