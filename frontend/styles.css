@@ -94,7 +94,7 @@ input {
 }
 
 .hero {
-  min-height: 760px;
+  min-height: 700px;
   color: white;
 }
 
@@ -102,7 +102,8 @@ input {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 22px 0;
+  gap: 16px;
+  padding: 14px 0;
 }
 
 .theme-switch,
@@ -111,7 +112,7 @@ input {
   border-radius: 999px;
   background: rgba(255,255,255,.08);
   color: inherit;
-  padding: 8px 11px;
+  padding: 6px 9px;
   font-size: 12px;
   font-weight: 900;
   cursor: pointer;
@@ -125,8 +126,8 @@ input {
 .hero::before {
   content: "";
   position: absolute;
-  inset: 86px 0 auto;
-  height: 620px;
+  inset: 70px 0 auto;
+  height: 560px;
   pointer-events: none;
   background:
     repeating-radial-gradient(circle at 78% 48%, rgba(125, 211, 252, .22) 0 2px, transparent 2px 30px),
@@ -146,13 +147,14 @@ input {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  flex: 0 0 auto;
+  gap: 10px;
 }
 
 .brand-mark {
   display: grid;
-  width: 42px;
-  height: 42px;
+  width: 36px;
+  height: 36px;
   place-items: center;
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 12px;
@@ -168,23 +170,25 @@ input {
 .brand small {
   margin-top: 2px;
   color: #aac0d5;
-  font-size: 11px;
-  letter-spacing: 0.18em;
+  font-size: 10px;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
 .nav-actions {
   display: flex;
+  flex: 1 1 auto;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 4px;
   color: #d6e6f2;
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .nav-actions a {
   border-radius: 999px;
-  padding: 8px 10px;
+  padding: 6px 8px;
 }
 
 .nav-actions a:hover,
@@ -198,7 +202,7 @@ input {
   grid-template-columns: minmax(0, 0.95fr) minmax(420px, 0.8fr);
   gap: 42px;
   align-items: center;
-  padding: 58px 0 86px;
+  padding: 36px 0 72px;
 }
 
 .hero-copy,
