@@ -16,6 +16,8 @@ Install guide: [https://wheather-prediction.onrender.com/install.html](https://w
 
 Dataset guide: [https://wheather-prediction.onrender.com/dataset.html](https://wheather-prediction.onrender.com/dataset.html)
 
+Area summary: [https://wheather-prediction.onrender.com/area.html](https://wheather-prediction.onrender.com/area.html)
+
 ![Home screen](media/home.png)
 
 ## Real-Time Test
@@ -38,6 +40,7 @@ Most beginner weather prediction projects stop at a notebook or a basic form. Th
 - real place search instead of fixed city buttons
 - current-location lookup for app-like mobile and desktop use
 - live forecast ingest instead of only static sample data
+- hierarchical area summaries for country, state, district, sub-district, city, town, village, and local area searches
 - Python AIML scoring layer instead of frontend-only calculations
 - separate pages for forecast, models, and pipeline
 - explainability output so users can see why the prediction looks the way it does
@@ -80,10 +83,12 @@ This choice makes the project easier for reviewers to reproduce: clone the repo,
 - Live global search through `/api/search`
 - 14-day future forecast through `/api/predict`
 - Current-device location forecast through `/api/predict-coordinates`
+- Hierarchical area summary through `/api/area-summary`
 - Deployment health check through `/api/health`
 - Historical model registry through `/api/model-registry`
 - Dataset workflow page explaining collection, features, target, and artifacts
 - Multi-page frontend: Home, Forecast, Models, Pipeline
+- Area page for country -> state -> district -> sub-district -> city/town/village/local area summaries
 - Hourly forecast page for the next 24 hours
 - Weather risk alerts for storms, heavy rain, wind, and heat
 - Location map page with OpenStreetMap handoff
@@ -116,6 +121,10 @@ This choice makes the project easier for reviewers to reproduce: clone the repo,
 | Forecast | Models |
 | --- | --- |
 | ![Forecast page](media/forecast.png) | ![Models page](media/models.png) |
+
+| Area Summary |
+| --- |
+| ![Area summary page](media/area.png) |
 
 | Hourly | Alerts |
 | --- | --- |
@@ -175,6 +184,7 @@ Human review docs:
 weather-prediction-ml/
   frontend/                        # Static browser app served at /
     index.html                     # Home/search page
+    area.html                      # Hierarchical area weather summary
     forecast.html                  # Forecast dashboard
     hourly.html                    # 24-hour forecast view
     alerts.html                    # Weather risk alerts
@@ -313,6 +323,13 @@ Predict weather:
 
 ```bash
 curl "http://127.0.0.1:4173/api/predict?city=Visakhapatnam"
+```
+
+Summarize a country, state, district, sub-district, city, town, village, or local area:
+
+```bash
+curl "http://127.0.0.1:4173/api/area-summary?area=Telangana"
+curl "http://127.0.0.1:4173/api/area-summary?area=Kondapur"
 ```
 
 API reference: [docs/api.md](docs/api.md)

@@ -66,7 +66,17 @@ def main():
     assert result["modelRegistry"]["available"] is True
     assert result["features"]
     assert result["meta"]["engine"] == "WeatherEnsemble-v2"
+
+    area = engine.area_summary("Telangana")
+    assert area["area"]["type"] == "state"
+    assert area["area"]["hierarchy"]["country"] == "India"
+    assert area["area"]["representative_locations"] >= 3
+    assert area["summary"]["averageTemperature"]
+    assert area["categories"]
+    assert area["locations"][0]["hierarchy"]["state"] == "Telangana"
+
     assert (FRONTEND_DIR / "index.html").exists()
+    assert (FRONTEND_DIR / "area.html").exists()
     assert (FRONTEND_DIR / "manifest.webmanifest").exists()
 
     print("Smoke test passed")

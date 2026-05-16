@@ -56,6 +56,34 @@ Key response sections:
 - `pipeline`: backend flow status.
 - `meta`: engine, latency, health, source, cache TTL, and source unit system.
 
+## Area Summary
+
+```http
+GET /api/area-summary?area=Telangana
+```
+
+Accepts a country, state, district, sub-district, city, town, village, or local area. For broad areas, the engine samples representative coordinates; for small places, it uses geocoding matches.
+
+Key response sections:
+
+- `area`: query, inferred area type, hierarchy, and sampled location count.
+- `summary`: average temperature, rain, humidity, wind, confidence, peak future risk, and area risk level.
+- `categories`: category-wise weather cards for temperature, rainfall, humidity, wind, confidence, and coverage.
+- `locations`: representative places with hierarchy, current conditions, forecast peaks, and alert levels.
+- `meta`: area-summary engine, latency, data source, and generated date.
+
+Example hierarchy:
+
+```json
+{
+  "country": "India",
+  "state": "Telangana",
+  "district": "Representative districts",
+  "sub_district": "Urban and rural sample points",
+  "local_area": "State sample"
+}
+```
+
 ## Health Check
 
 ```http

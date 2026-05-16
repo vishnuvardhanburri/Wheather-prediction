@@ -15,7 +15,9 @@ const fallbackFeatures = [
 
 const params = new URLSearchParams(window.location.search);
 const initialCity = params.get("city") || "Hyderabad";
+const initialArea = params.get("area") || "Telangana";
 const input = document.getElementById("cityInput");
+const areaInput = document.getElementById("areaInput");
 const resultsPanel = document.getElementById("searchResults");
 const locationButton = document.getElementById("useLocation");
 const unitKey = "weatherml:units";
@@ -24,6 +26,7 @@ let unitMode = localStorage.getItem(unitKey) || "metric";
 let deferredInstallPrompt = null;
 
 if (input) input.value = initialCity;
+if (areaInput) areaInput.value = initialArea;
 applyTheme(localStorage.getItem("weatherml:theme") || "dark");
 applyUnits(unitMode);
 installThemeSwitch();
@@ -97,7 +100,7 @@ function installMobileNav() {
     ["Forecast", "forecast.html"],
     ["Alerts", "alerts.html"],
     ["Models", "models.html"],
-    ["Dataset", "dataset.html"],
+    ["Area", "area.html"],
     ["Install", "install.html"],
   ];
   const current = window.location.pathname.split("/").pop() || "index.html";
@@ -107,8 +110,10 @@ function installMobileNav() {
   nav.innerHTML = links
     .map(([label, page]) => {
       const active = current === page || (current === "index.html" && page === "forecast.html") ? " active" : "";
-      const cityAttr = page === "favorites.html" ? "" : ` data-city-link="${page}"`;
-      return `<a class="mobile-nav-item${active}"${cityAttr} href="${cityUrl(page, initialCity)}">${label}</a>`;
+      if (page === "area.html") {
+        return `<a class="mobile-nav-item${active}" href="/area.html?area=${encodeURIComponent(initialArea)}">${label}</a>`;
+      }
+      return `<a class="mobile-nav-item${active}" data-city-link="${page}" href="${cityUrl(page, initialCity)}">${label}</a>`;
     })
     .join("");
   document.body.appendChild(nav);
@@ -138,6 +143,14 @@ function installAboutLink() {
       dataset.textContent = "Dataset";
       if (window.location.pathname.endsWith("/dataset.html")) dataset.className = "active";
       nav.appendChild(dataset);
+    }
+
+    if (!nav.querySelector('[href="/area.html"]')) {
+      const area = document.createElement("a");
+      area.href = "/area.html";
+      area.textContent = "Area";
+      if (window.location.pathname.endsWith("/area.html")) area.className = "active";
+      nav.appendChild(area);
     }
 
     if (!nav.querySelector('[href="/install.html"]')) {
@@ -261,6 +274,15 @@ async function predict(city) {
   const payload = await response.json();
   if (!response.ok || payload.error) {
     throw new Error(payload.message || "Prediction service failed");
+  }
+  return payload;
+}
+
+async function fetchAreaSummary(area) {
+  const response = await fetch(`/api/area-summary?area=${encodeURIComponent(area)}`);
+  const payload = await response.json();
+  if (!response.ok || payload.error) {
+    throw new Error(payload.message || "Area summary service failed");
   }
   return payload;
 }
@@ -593,6 +615,125 @@ function renderMeta(meta) {
   setText("sla", meta.health || "Live");
 }
 
+function hierarchyTitle(key) {
+  return {
+    country: "Country",
+    state: "State",
+    district: "District",
+    sub_district: "Sub-district",
+    local_area: "City / town / village / local area",
+  }[key] || key.replaceAll("_", " ");
+}
+
+function riskClass(level) {
+  const normalized = String(level || "").toLowerCase();
+  if (normalized === "high") return "risk-high";
+  if (normalized === "medium") return "risk-medium";
+  return "risk-low";
+}
+
+function areaCategoryCard(item) {
+  return `
+    <article class="area-category-card">
+      <span>${item.name}</span>
+      <strong>${localizeMetricText(item.value)}</strong>
+      <p>${localizeMetricText(item.detail)}</p>
+    </article>
+  `;
+}
+
+function areaLocationCard(location) {
+  const hierarchy = location.hierarchy || {};
+  const detail = [hierarchy.state, hierarchy.district, hierarchy.sub_district]
+    .filter((item) => item && item !== "--")
+    .join(" / ");
+  return `
+    <article class="area-location-card">
+      <header>
+        <div>
+          <span>${detail || location.region || "Resolved place"}</span>
+          <h3>${location.name}</h3>
+        </div>
+        <a class="mini-link" href="${cityUrl("forecast.html", location.name)}">Forecast</a>
+      </header>
+      <p>${location.condition}</p>
+      <div class="area-metrics">
+        <div><span>Temp</span><strong>${formatTemp(location.temperature)}</strong></div>
+        <div><span>Rain</span><strong>${location.rain}%</strong></div>
+        <div><span>Humidity</span><strong>${location.humidity}%</strong></div>
+        <div><span>Wind</span><strong>${formatWind(location.wind)}</strong></div>
+      </div>
+      <footer>
+        <span>${location.confidence}% confidence</span>
+        <span>${location.alerts?.[0]?.level || "Low"} alert</span>
+      </footer>
+    </article>
+  `;
+}
+
+function renderAreaSummary(data) {
+  const area = data.area || {};
+  const summary = data.summary || {};
+  const hierarchy = area.hierarchy || {};
+  const risk = summary.riskLevel || "Low";
+  const typedArea = area.query || areaInput?.value || "Area";
+
+  setText("areaTitle", `${typedArea} ${area.type || "weather summary"}`);
+  setText("areaRisk", `${risk} risk`);
+  const riskPill = document.getElementById("areaRisk");
+  if (riskPill) riskPill.className = `pill ${riskClass(risk)}`;
+  setText(
+    "areaHeadline",
+    `${summary.headline || "Area summary generated."} Average ${formatTemp(summary.averageTemperature || 0)}, ${summary.averageRain || 0}% rain chance, ${summary.averageHumidity || 0}% humidity, ${formatWind(summary.averageWind || 0)} wind.`,
+  );
+  setText("areaCoverage", `${area.representative_locations || 0} sampled`);
+
+  const hierarchyNode = document.getElementById("areaHierarchy");
+  if (hierarchyNode) {
+    hierarchyNode.innerHTML = ["country", "state", "district", "sub_district", "local_area"]
+      .map(
+        (key) => `
+          <article class="hierarchy-card">
+            <span>${hierarchyTitle(key)}</span>
+            <strong>${hierarchy[key] || "--"}</strong>
+          </article>
+        `,
+      )
+      .join("");
+  }
+
+  const categoriesNode = document.getElementById("areaCategories");
+  if (categoriesNode) {
+    categoriesNode.innerHTML = (data.categories || []).map(areaCategoryCard).join("");
+  }
+
+  const locationsNode = document.getElementById("areaLocations");
+  if (locationsNode) {
+    locationsNode.innerHTML = (data.locations || []).map(areaLocationCard).join("");
+  }
+
+  const errorBox = document.getElementById("errorBox");
+  if (errorBox) errorBox.hidden = true;
+}
+
+async function submitArea(area) {
+  const clean = area.trim() || "Telangana";
+  document.body.classList.add("is-loading");
+  try {
+    const data = await fetchAreaSummary(clean);
+    renderAreaSummary(data);
+    history.replaceState(null, "", `/area.html?area=${encodeURIComponent(clean)}`);
+  } catch (error) {
+    const errorBox = document.getElementById("errorBox");
+    if (errorBox) {
+      errorBox.textContent = error instanceof Error ? error.message : "Unable to generate area summary.";
+      errorBox.hidden = false;
+    }
+  } finally {
+    document.body.classList.remove("is-loading");
+  }
+}
+
 function favoriteKey() {
   return "weatherml:favorites";
 }
@@ -837,6 +978,11 @@ document.getElementById("compareForm")?.addEventListener("submit", (event) => {
   renderComparePage();
 });
 
+document.getElementById("areaForm")?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  submitArea(areaInput?.value || initialArea);
+});
+
 let searchTimer;
 input?.addEventListener("input", () => {
   window.clearTimeout(searchTimer);
@@ -877,6 +1023,8 @@ if (window.location.pathname.endsWith("/compare.html")) {
   renderFavoritesDashboard();
 } else if (window.location.pathname.endsWith("/training.html")) {
   renderTrainingPage();
+} else if (window.location.pathname.endsWith("/area.html")) {
+  submitArea(initialArea);
 } else if (autoPredictionPages.some((page) => window.location.pathname.endsWith(page))) {
   submit(initialCity);
 } else if (window.location.pathname === "/" || window.location.pathname.endsWith("/index.html")) {

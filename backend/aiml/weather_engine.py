@@ -45,6 +45,43 @@ DEFAULT_MODEL_SCORES = [
     {"model": "Gradient Boosting", "accuracy": 89, "mae": 2.1},
 ]
 
+AREA_PRESETS = {
+    "india": {
+        "type": "country",
+        "hierarchy": {"country": "India", "state": "All states", "district": "Representative districts", "sub_district": "Major urban zones", "local_area": "National sample"},
+        "locations": [
+            {"name": "Delhi", "region": "Delhi, India", "country": "India", "admin1": "Delhi", "latitude": 28.65195, "longitude": 77.23149, "timezone": "Asia/Kolkata"},
+            {"name": "Mumbai", "region": "Maharashtra, India", "country": "India", "admin1": "Maharashtra", "latitude": 19.07283, "longitude": 72.88261, "timezone": "Asia/Kolkata"},
+            {"name": "Hyderabad", "region": "Telangana, India", "country": "India", "admin1": "Telangana", "latitude": 17.38405, "longitude": 78.45636, "timezone": "Asia/Kolkata"},
+            {"name": "Kolkata", "region": "West Bengal, India", "country": "India", "admin1": "West Bengal", "latitude": 22.56263, "longitude": 88.36304, "timezone": "Asia/Kolkata"},
+            {"name": "Chennai", "region": "Tamil Nadu, India", "country": "India", "admin1": "Tamil Nadu", "latitude": 13.08784, "longitude": 80.27847, "timezone": "Asia/Kolkata"},
+            {"name": "Bengaluru", "region": "Karnataka, India", "country": "India", "admin1": "Karnataka", "latitude": 12.97194, "longitude": 77.59369, "timezone": "Asia/Kolkata"},
+        ],
+    },
+    "telangana": {
+        "type": "state",
+        "hierarchy": {"country": "India", "state": "Telangana", "district": "Representative districts", "sub_district": "Urban and rural sample points", "local_area": "State sample"},
+        "locations": [
+            {"name": "Hyderabad", "region": "Telangana, India", "country": "India", "admin1": "Telangana", "admin2": "Hyderabad District", "latitude": 17.38405, "longitude": 78.45636, "timezone": "Asia/Kolkata"},
+            {"name": "Warangal", "region": "Telangana, India", "country": "India", "admin1": "Telangana", "admin2": "Warangal", "latitude": 17.97842, "longitude": 79.60009, "timezone": "Asia/Kolkata"},
+            {"name": "Nizamabad", "region": "Telangana, India", "country": "India", "admin1": "Telangana", "admin2": "Nizamabad", "latitude": 18.67154, "longitude": 78.0988, "timezone": "Asia/Kolkata"},
+            {"name": "Khammam", "region": "Telangana, India", "country": "India", "admin1": "Telangana", "admin2": "Khammam", "latitude": 17.24767, "longitude": 80.14368, "timezone": "Asia/Kolkata"},
+            {"name": "Adilabad", "region": "Telangana, India", "country": "India", "admin1": "Telangana", "admin2": "Adilabad", "latitude": 19.67203, "longitude": 78.5359, "timezone": "Asia/Kolkata"},
+        ],
+    },
+    "andhra pradesh": {
+        "type": "state",
+        "hierarchy": {"country": "India", "state": "Andhra Pradesh", "district": "Representative districts", "sub_district": "Coastal and inland sample points", "local_area": "State sample"},
+        "locations": [
+            {"name": "Visakhapatnam", "region": "Andhra Pradesh, India", "country": "India", "admin1": "Andhra Pradesh", "admin2": "Visakhapatnam", "latitude": 17.68009, "longitude": 83.20161, "timezone": "Asia/Kolkata"},
+            {"name": "Vijayawada", "region": "Andhra Pradesh, India", "country": "India", "admin1": "Andhra Pradesh", "admin2": "NTR", "latitude": 16.50745, "longitude": 80.6466, "timezone": "Asia/Kolkata"},
+            {"name": "Tirupati", "region": "Andhra Pradesh, India", "country": "India", "admin1": "Andhra Pradesh", "admin2": "Tirupati", "latitude": 13.63551, "longitude": 79.41989, "timezone": "Asia/Kolkata"},
+            {"name": "Kurnool", "region": "Andhra Pradesh, India", "country": "India", "admin1": "Andhra Pradesh", "admin2": "Kurnool", "latitude": 15.82887, "longitude": 78.03602, "timezone": "Asia/Kolkata"},
+            {"name": "Rajahmundry", "region": "Andhra Pradesh, India", "country": "India", "admin1": "Andhra Pradesh", "admin2": "East Godavari", "latitude": 17.00517, "longitude": 81.77784, "timezone": "Asia/Kolkata"},
+        ],
+    },
+}
+
 
 def _get_json(url: str, params: dict[str, Any], timeout: int = 8) -> dict[str, Any]:
     query = urlencode(params, doseq=True)
@@ -131,6 +168,56 @@ class WeatherEnsemble:
         started = perf_counter()
         location = self._location_from_coordinates(latitude, longitude)
         return self._predict_location(location, started)
+
+    def area_summary(self, query: str) -> dict[str, Any]:
+        started = perf_counter()
+        area = self._resolve_area(query)
+        rows = []
+        for location in area["locations"]:
+            try:
+                prediction = self._predict_location(location, perf_counter())
+            except Exception:
+                continue
+            current = prediction["current"]
+            forecast = prediction["forecast"]
+            rows.append(
+                {
+                    "name": prediction["profile"]["city"],
+                    "region": prediction["profile"]["region"],
+                    "hierarchy": self._hierarchy_for_location(location),
+                    "condition": current["condition"],
+                    "temperature": current["temperature"],
+                    "rain": current["rain"],
+                    "humidity": current["humidity"],
+                    "wind": current["wind"],
+                    "confidence": current["confidence"],
+                    "peakRain": max(day["rain"] for day in forecast),
+                    "peakTemperature": max(day["temperatureMax"] for day in forecast),
+                    "alerts": prediction["alerts"],
+                },
+            )
+        if not rows:
+            raise ValueError(f"No forecast-capable locations found for '{query}'.")
+
+        summary = self._summarize_area_rows(rows)
+        elapsed_ms = max(18, round((perf_counter() - started) * 1000))
+        return {
+            "area": {
+                "query": query,
+                "type": area["type"],
+                "hierarchy": area["hierarchy"],
+                "representative_locations": len(rows),
+            },
+            "summary": summary,
+            "categories": self._area_categories(summary, rows),
+            "locations": rows,
+            "meta": {
+                "engine": "WeatherAreaSummary-v1",
+                "latency_ms": elapsed_ms,
+                "source": "Open-Meteo geocoding + representative forecast sampling",
+                "generated_on": date.today().isoformat(),
+            },
+        }
 
     def _predict_location(self, location: dict[str, Any], started: float) -> dict[str, Any]:
         raw = self._fetch_forecast(location)
@@ -223,6 +310,110 @@ class WeatherEnsemble:
         if not results:
             raise ValueError(f"No matching place found for '{city}'.")
         return results[0]
+
+    def _resolve_area(self, query: str) -> dict[str, Any]:
+        clean = (query or "").strip()
+        if len(clean) < 2:
+            raise ValueError("Enter a country, state, district, sub-district, city, town, village, or local area.")
+        preset = AREA_PRESETS.get(clean.lower())
+        if preset:
+            return preset
+        results = self.search_locations(clean, count=8)
+        if not results:
+            raise ValueError(f"No matching area found for '{query}'. Try a nearby town, mandal, district, or state.")
+        locations = self._unique_locations(results)
+        return {
+            "type": self._infer_area_type(clean, locations),
+            "hierarchy": self._hierarchy_for_area(clean, locations),
+            "locations": locations[:6],
+        }
+
+    @staticmethod
+    def _unique_locations(locations: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        seen = set()
+        unique = []
+        for item in locations:
+            key = (round(float(item["latitude"]), 3), round(float(item["longitude"]), 3), item["name"])
+            if key in seen:
+                continue
+            seen.add(key)
+            unique.append(item)
+        return unique
+
+    @staticmethod
+    def _common_value(locations: list[dict[str, Any]], key: str) -> str:
+        values = {str(item.get(key) or "").strip() for item in locations if item.get(key)}
+        if len(values) == 1:
+            return values.pop()
+        return "Multiple"
+
+    def _hierarchy_for_area(self, query: str, locations: list[dict[str, Any]]) -> dict[str, str]:
+        return {
+            "country": self._common_value(locations, "country"),
+            "state": self._common_value(locations, "admin1"),
+            "district": self._common_value(locations, "admin2"),
+            "sub_district": self._common_value(locations, "admin3"),
+            "local_area": query,
+        }
+
+    @staticmethod
+    def _hierarchy_for_location(location: dict[str, Any]) -> dict[str, str]:
+        return {
+            "country": location.get("country") or "--",
+            "state": location.get("admin1") or "--",
+            "district": location.get("admin2") or "--",
+            "sub_district": location.get("admin3") or "--",
+            "local_area": location.get("name") or "--",
+        }
+
+    @staticmethod
+    def _infer_area_type(query: str, locations: list[dict[str, Any]]) -> str:
+        if len(locations) > 1:
+            if len({item.get("admin1") for item in locations if item.get("admin1")}) > 1:
+                return "multi-region local search"
+            if len({item.get("admin2") for item in locations if item.get("admin2")}) > 1:
+                return "district/sub-district group"
+        item = locations[0]
+        if query.lower() == str(item.get("country", "")).lower():
+            return "country"
+        if query.lower() == str(item.get("admin1", "")).lower():
+            return "state"
+        if query.lower() == str(item.get("admin2", "")).lower():
+            return "district"
+        if query.lower() == str(item.get("admin3", "")).lower():
+            return "sub-district"
+        return "city/town/village/local area"
+
+    @staticmethod
+    def _summarize_area_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
+        avg = lambda key: round(sum(row[key] for row in rows) / len(rows))
+        high_alerts = sum(1 for row in rows for alert in row["alerts"] if alert["level"] == "High")
+        medium_alerts = sum(1 for row in rows for alert in row["alerts"] if alert["level"] == "Medium")
+        peak_rain = max(row["peakRain"] for row in rows)
+        peak_temp = max(row["peakTemperature"] for row in rows)
+        risk = "High" if high_alerts or peak_rain >= 70 else "Medium" if medium_alerts or peak_temp >= 38 else "Low"
+        return {
+            "averageTemperature": avg("temperature"),
+            "averageRain": avg("rain"),
+            "averageHumidity": avg("humidity"),
+            "averageWind": avg("wind"),
+            "averageConfidence": avg("confidence"),
+            "peakRain": peak_rain,
+            "peakTemperature": peak_temp,
+            "riskLevel": risk,
+            "headline": f"{risk} area risk across {len(rows)} representative location{'s' if len(rows) != 1 else ''}.",
+        }
+
+    @staticmethod
+    def _area_categories(summary: dict[str, Any], rows: list[dict[str, Any]]) -> list[dict[str, str]]:
+        return [
+            {"name": "Temperature", "value": f"{summary['averageTemperature']}°C avg", "detail": f"Peak forecast high reaches {summary['peakTemperature']}°C."},
+            {"name": "Rainfall", "value": f"{summary['averageRain']}% avg", "detail": f"Highest rain probability across sampled locations is {summary['peakRain']}%."},
+            {"name": "Humidity", "value": f"{summary['averageHumidity']}% avg", "detail": "Humidity is averaged from current representative location readings."},
+            {"name": "Wind", "value": f"{summary['averageWind']} km/h avg", "detail": "Wind category summarizes near-surface current wind across the sampled area."},
+            {"name": "Confidence", "value": f"{summary['averageConfidence']}% avg", "detail": "Confidence is averaged from the Python scoring layer."},
+            {"name": "Coverage", "value": f"{len(rows)} locations", "detail": "Summary uses representative coordinates for broad areas and exact matches for small places."},
+        ]
 
     @staticmethod
     def _location_from_coordinates(latitude: float, longitude: float) -> dict[str, Any]:
@@ -393,6 +584,9 @@ class WeatherEnsemble:
             "name": item.get("name"),
             "region": region or item.get("country", "Unknown region"),
             "country": item.get("country", ""),
+            "admin1": item.get("admin1"),
+            "admin2": item.get("admin2"),
+            "admin3": item.get("admin3"),
             "latitude": item.get("latitude"),
             "longitude": item.get("longitude"),
             "timezone": item.get("timezone"),

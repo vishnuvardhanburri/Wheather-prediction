@@ -65,6 +65,17 @@ class WeatherRequestHandler(SimpleHTTPRequestHandler):
                 self._send_json({"results": [], "error": True, "message": str(exc)}, status=502)
             return
 
+        if parsed.path == "/api/area-summary":
+            params = parse_qs(parsed.query)
+            area = params.get("area", [""])[0]
+            try:
+                self._send_json(ENGINE.area_summary(area))
+            except ValueError as exc:
+                self._send_json({"error": True, "message": str(exc)}, status=404)
+            except Exception as exc:
+                self._send_json({"error": True, "message": f"Area summary service error: {exc}"}, status=502)
+            return
+
         if parsed.path == "/api/model-registry":
             registry = ENGINE.model_registry()
             if registry:

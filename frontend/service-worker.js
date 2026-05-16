@@ -1,8 +1,9 @@
-const CACHE_NAME = "weatherml-shell-v10";
+const CACHE_NAME = "weatherml-shell-v11";
 const APP_SHELL = [
   "/",
   "/index.html",
   "/forecast.html",
+  "/area.html",
   "/hourly.html",
   "/alerts.html",
   "/map.html",
