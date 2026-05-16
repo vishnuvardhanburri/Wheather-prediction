@@ -43,6 +43,38 @@ Most beginner weather prediction projects stop at a notebook or a basic form. Th
 - explainability output so users can see why the prediction looks the way it does
 - mobile-first navigation, installable PWA support, and Docker-ready deployment
 
+## Why We Did Not Upload A Fixed Dataset
+
+Weather changes every hour, so a static CSV would quickly become outdated. Instead of keeping one old dataset inside the repository, WeatherML generates the dataset through code whenever training is needed. This makes the project more realistic, repeatable, and easier to explain.
+
+We avoided a fixed downloaded dataset because:
+
+- many public weather CSV files are limited to one city, one time range, or one weather station
+- static datasets become stale and do not prove the live app can work with current data
+- large CSV files make the repository heavier without improving the deployed user experience
+- dataset licenses can be unclear, while Open-Meteo provides open weather APIs that are simple to cite
+- generating data through code lets anyone rebuild the dataset for Hyderabad, Visakhapatnam, London, or another city
+
+The project still has a real training dataset, but it is created by the pipeline:
+
+```bash
+python3 backend/aiml/training_pipeline.py --city Hyderabad --days 730
+```
+
+That command pulls historical daily weather, builds ML features, trains/evaluates models, and writes review artifacts such as `metrics.json`, `predictions.csv`, `feature_weights.csv`, and `model-card.md`.
+
+## Why We Use Open Data And Lightweight Open-Source Tools
+
+WeatherML uses Open-Meteo services and browser/Python standard capabilities because the goal is to keep the project transparent, runnable, and deployable without paid keys.
+
+- Open-Meteo Geocoding API resolves city names into coordinates.
+- Open-Meteo Forecast API powers current and 14-day future weather.
+- Open-Meteo Historical Weather API creates the training dataset.
+- Python standard library keeps the backend easy to run on local machines, Docker, GitHub Actions, and Render.
+- Browser APIs provide PWA install support, geolocation, voice briefing, and share/download features without a heavy frontend framework.
+
+This choice makes the project easier for reviewers to reproduce: clone the repo, run the Python server, rebuild the training registry, and inspect the generated artifacts without needing private API keys.
+
 ## Features
 
 - Live global search through `/api/search`
